@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Image Library</title>
+    <title>The Null Spot</title>
     <style>
         /* --- CSS STYLES (The Look) --- */
         * {
@@ -20,12 +20,25 @@
 
         header {
             text-align: center;
-            padding: 40px 20px;
-            background-color: #252525;
-            border-bottom: 1px solid #333;
+            padding: 50px 20px;
+            background-color: #000000;
+            border-bottom: 2px solid #555;
         }
 
-        /* This creates the library shelf grid */
+        header h1 {
+            font-size: 3rem;
+            color: #4CAF50;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
+
+        header p {
+            margin-top: 10px;
+            color: #ccc;
+            font-style: italic;
+        }
+
+        /* Library Grid */
         .library-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -35,20 +48,21 @@
             margin: 0 auto;
         }
 
-        /* The Card Design */
+        /* Card Design */
         .card {
             background-color: #252525;
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            transition: transform 0.2s ease;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid #333;
+            cursor: pointer; /* Indicates it's clickable */
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            border-color: #555;
-            cursor: pointer;
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.7);
+            border-color: #4CAF50;
         }
 
         .image-container {
@@ -60,7 +74,8 @@
         .image-container img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Keeps image proportional */
+            object-fit: cover;
+            transition: opacity 0.3s;
         }
 
         .card-info {
@@ -68,58 +83,154 @@
         }
 
         .card-info h3 {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             margin-bottom: 5px;
-            color: #fff;
+            color: #4CAF50;
         }
 
         .card-info p {
-            color: #888;
+            color: #aaa;
             font-size: 0.9rem;
         }
+        
+        /* Footer Removal (CSS to hide it, though we removed it in HTML) */
+        footer { display: none; }
 
-        footer {
-            text-align: center;
-            padding: 20px;
-            margin-top: 40px;
-            color: #555;
-            font-size: 0.8rem;
+
+        /* --- MODAL (POPUP) STYLES --- */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000; /* On top of everything */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.9); /* Black background with opacity */
+            padding-top: 60px;
         }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+
+        #download-btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px 20px;
+            text-align: center;
+            background-color: #4CAF50; /* Green Download button */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #download-btn:hover {
+            background-color: #388e3c;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+        }
+
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Project Library</h1>
+        <h1>The Null Spot</h1>
+        <p>A place for all things...</p>
     </header>
 
     <main class="library-grid">
         
-        <div class="card">
+        <div class="card" onclick="openModal('NewJoy.png', 'NewJoy.png')">
             <div class="image-container">
                 <img src="NewJoy.png" alt="New Joy Project">
             </div>
             <div class="card-info">
                 <h3>New Joy</h3>
-                <p>Project Image</p>
+                <p>Initial Project File</p>
             </div>
         </div>
 
-        <div class="card">
+        <div class="card" onclick="openModal('https://via.placeholder.com/600x450/333333/ffffff?text=Image+2', 'Placeholder.png')">
             <div class="image-container">
-                <img src="https://via.placeholder.com/400x300/333333/ffffff?text=Image+2" alt="Placeholder">
+                <img src="https://via.placeholder.com/400x300/333333/ffffff?text=Empty+Slot+1" alt="Placeholder">
             </div>
             <div class="card-info">
                 <h3>Next Project</h3>
-                <p>Coming Soon</p>
+                <p>Awaiting upload...</p>
             </div>
         </div>
 
     </main>
 
-    <footer>
-        <p>Gallery hosted on GitHub Pages</p>
-    </footer>
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+
+        <img class="modal-content" id="modalImage">
+
+        <a id="download-btn" href="#" download>Download Image</a>
+    </div>
+
+    <script>
+        // --- JAVASCRIPT SCRIPT (The Functionality) ---
+
+        var modal = document.getElementById("imageModal");
+        var modalImage = document.getElementById("modalImage");
+        var downloadButton = document.getElementById("download-btn");
+
+        // Function to open the modal
+        function openModal(imageSrc, filename) {
+            modal.style.display = "block";
+            modalImage.src = imageSrc;
+            
+            // Set the download link (href is the file location, download is the saved name)
+            downloadButton.href = imageSrc;
+            downloadButton.download = filename; 
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        // Close the modal if the user clicks anywhere outside of the image
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
 
 </body>
 </html>
