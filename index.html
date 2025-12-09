@@ -1,3 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Image Library</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--muted:#9aa4b2;--accent:#7dd3fc}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:linear-gradient(180deg,#071024 0%, #07182a 100%);color:#e6eef6;}
+    header{display:flex;align-items:center;justify-content:space-between;padding:20px 32px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:46px;height:46px;border-radius:8px;background:linear-gradient(135deg,#06b6d4,#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:700}
+    h1{font-size:18px;margin:0}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+    .controls{display:flex;gap:12px;align-items:center}
+    .search{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.03);padding:8px 12px;border-radius:10px;display:flex;align-items:center;gap:8px}
+    .search input{background:transparent;border:0;outline:none;color:inherit;width:200px}
+    .btn{background:var(--accent);color:#022;border:0;padding:8px 12px;border-radius:10px;font-weight:600;cursor:pointer}
+    main{padding:24px 32px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:18px}
+    .tile{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:12px;padding:10px;border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:8px;align-items:stretch}
+    .thumb{height:140px;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#031226}
+    .thumb img{max-width:100%;max-height:100%;display:block}
+    .meta{display:flex;justify-content:space-between;align-items:center}
+    .meta .name{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#eaf4ff}
+    .meta .size{font-size:12px;color:var(--muted)}
+    .empty{color:var(--muted);text-align:center;padding:40px;border:2px dashed rgba(255,255,255,0.03);border-radius:12px}
+
+    /* Lightbox */
+    .lightbox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(4,8,16,0.7);z-index:60}
+    .lightbox.show{display:flex}
+    .lb-card{max-width:90%;max-height:90%;border-radius:12px;overflow:hidden;background:#081426;padding:12px}
+    .lb-card img{max-width:100%;max-height:80vh;display:block}
+    .lb-actions{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+    .uploader{display:flex;gap:8px;align-items:center}
+    input[type=file]{display:none}
+
+    /* responsive */
+    @media (max-width:600px){.search input{width:120px}.brand h1{font-size:14px}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">IL</div>
+      <div>
+        <h1>Image Library</h1>
+        <p class="lead">Browse, preview and manage your images</p>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 21l-4.35-4.35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="11" cy="11" r="6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></circle></svg>
+        <input id="q" placeholder="Search images..." />
+      </div>
+      <label class="btn" for="file">Upload</label>
+      <input id="file" type="file" accept="image/*" />
+    </div>
+  </header>
+
+  <main>
+    <section id="library">
+      <div class="grid" id="grid">
+        <!-- tiles injected by JS -->
+      </div>
+    </section>
+  </main>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-hidden="true">
+    <div class="lb-card">
+      <img id="lb-img" src="" alt="Preview" />
+      <div class="lb-actions">
+        <div class="uploader">File: <span id="lb-name" style="margin-left:8px;color:var(--muted)"></span></div>
+        <div>
+          <button id="close" class="btn">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* Initial images. The first image should be project/NewJoy.png as requested. */
+    const initial = [
+      {name:'NewJoy.png', path:'project/NewJoy.png', size:'--'},
+      // You can add more images here or upload via the Upload button.
+    ];
+
+    const grid = document.getElementById('grid');
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lb-img');
+    const lbName = document.getElementById('lb-name');
+    const q = document.getElementById('q');
+    const fileIn = document.getElementById('file');
+
+    let images = [...initial];
+
+    function humanSize(bytes){ if(!bytes) return '--'; if(bytes<1024) return bytes+' B'; if(bytes<1048576) return (bytes/1024).toFixed(1)+' KB'; return (bytes/1048576).toFixed(2)+' MB'; }
+
+    function renderGrid(filter=''){
+      grid.innerHTML='';
+      const filtered = images.filter(i => i.name.toLowerCase().includes(filter.toLowerCase()));
+      if(filtered.length===0){ grid.innerHTML = '<div class="empty">No images found. Try uploading one or remove the search filter.</div>'; return }
+      for(const img of filtered){
+        const tile = document.createElement('div'); tile.className='tile';
+        const thumb = document.createElement('div'); thumb.className='thumb';
+        const im = document.createElement('img'); im.src = img.path; im.alt = img.name;
+        im.onerror = ()=>{ im.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200"><rect width="100%" height="100%" fill="#041226"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9aa4b2" font-size="16">Missing: '+encodeURIComponent(img.name)+'</text></svg>' }
+        thumb.appendChild(im);
+        const meta = document.createElement('div'); meta.className='meta';
+        const name = document.createElement('div'); name.className='name'; name.textContent = img.name;
+        const size = document.createElement('div'); size.className='size'; size.textContent = humanSize(img.size);
+        meta.appendChild(name); meta.appendChild(size);
+        tile.appendChild(thumb); tile.appendChild(meta);
+        tile.addEventListener('click', ()=> openLightbox(img));
+        grid.appendChild(tile);
+      }
+    }
+
+    function openLightbox(img){ lbImg.src = img.path; lbName.textContent = img.name; lb.classList.add('show'); lb.setAttribute('aria-hidden','false'); }
+    function closeLightbox(){ lb.classList.remove('show'); lb.setAttribute('aria-hidden','true'); }
+
+    document.getElementById('close').addEventListener('click', closeLightbox);
+    lb.addEventListener('click', (e)=>{ if(e.target===lb) closeLightbox(); });
+
+    q.addEventListener('input', ()=> renderGrid(q.value));
+
+    fileIn.addEventListener('change', async (e)=>{
+      const f = e.target.files[0]; if(!f) return;
+      const url = URL.createObjectURL(f);
+      images.unshift({name:f.name, path:url, size:f.size});
+      renderGrid(q.value);
+    });
+
+    // initial render
+    renderGrid();
+  </script>
+</body>
+</html>
 <!DOCTYPE html>
 <html>
 <head>
