@@ -39,7 +39,7 @@
             font-size: 1.2rem;
         }
 
-        /* Library Grid */
+        /* Library Grid (Simplified as there is only one item) */
         .library-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -47,6 +47,7 @@
             padding: 40px;
             max-width: 1200px;
             margin: 0 auto;
+            justify-content: center; /* Center the single card */
         }
 
         /* Card Design */
@@ -123,10 +124,19 @@
             max-width: 100%;
             object-fit: contain; 
         }
+        
+        /* New: Description Text */
+        #image-description {
+            color: #ddd;
+            margin: 15px auto 10px;
+            max-width: 80%;
+            font-size: 1.1rem;
+        }
+
 
         #download-btn {
             display: inline-block; 
-            margin: 20px auto 0;
+            margin: 10px auto 0;
             padding: 12px 25px;
             background-color: #4CAF50;
             color: white;
@@ -169,23 +179,13 @@
 
     <main class="library-grid">
         
-        <div class="card" onclick="openModal('NewJoy.png', 'NewJoy.png')">
+        <div class="card" onclick="openModal('NewJoy.png', 'NewJoy.png', 'This is the initial image for the New Joy project, captured on 2025-12-09.')">
             <div class="image-container">
                 <img src="NewJoy.png" alt="New Joy Project">
             </div>
             <div class="card-info">
                 <h3>New Joy</h3>
                 <p>Initial Project File</p>
-            </div>
-        </div>
-
-        <div class="card" onclick="openModal('?.png', 'Question_Mark.png')">
-            <div class="image-container">
-                <img src="https://via.placeholder.com/400x300/111111/4CAF50?text=?+Slot" alt="Placeholder">
-            </div>
-            <div class="card-info">
-                <h3>Unknown</h3>
-                <p>Ready for ?.png</p>
             </div>
         </div>
 
@@ -196,6 +196,9 @@
 
         <div class="modal-content-wrapper">
             <img class="modal-content" id="modalImage">
+            
+            <p id="image-description"></p>
+
             <a id="download-btn" href="#" download>Download Image</a>
         </div>
     </div>
@@ -206,12 +209,16 @@
         var modal = document.getElementById("imageModal");
         var modalImage = document.getElementById("modalImage");
         var downloadButton = document.getElementById("download-btn");
+        var descriptionArea = document.getElementById("image-description"); // New element reference
 
         // Function to open the modal
-        function openModal(imageSrc, filename) {
+        function openModal(imageSrc, filename, description) { // Added 'description' argument
             modal.style.display = "block";
             modalImage.src = imageSrc;
             
+            // Set the new description text
+            descriptionArea.textContent = description; 
+
             // Set the download link
             downloadButton.href = imageSrc;
             downloadButton.download = filename; 
