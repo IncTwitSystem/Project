@@ -6,150 +6,145 @@
 <title>The Null Spot</title>
 
 <style>
-    :root {
-        --bg: #f3e8c8;
-        --panel: #fff9e6;
-        --border: #b89b5e;
-        --text: #2b2416;
-        --accent: #6b4b16;
-        --hover: #eeddb6;
-    }
+:root {
+    --bg: #f3e8c8;
+    --panel: #fff9e6;
+    --border: #b89b5e;
+    --text: #2b2416;
+    --accent: #6b4b16;
+    --hover: #eeddb6;
+}
 
-    body {
-        margin: 0;
-        font-family: "Courier New", monospace;
-        background: var(--bg);
-        color: var(--text);
-    }
+body {
+    margin: 0;
+    font-family: "Courier New", monospace;
+    background: var(--bg);
+    color: var(--text);
+}
 
-    header {
-        padding: 40px;
-        text-align: center;
-        background: var(--panel);
-        border-bottom: 4px solid var(--border);
-    }
-    header h1 {
-        font-size: 2.8rem;
-        text-transform: uppercase;
-        letter-spacing: 4px;
-        border: 3px double var(--border);
-        display: inline-block;
-        padding: 10px 25px;
-        background: #fffdf4;
-    }
+header {
+    padding: 40px;
+    text-align: center;
+    background: var(--panel);
+    border-bottom: 4px solid var(--border);
+}
+header h1 {
+    font-size: 2.8rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    border: 3px double var(--border);
+    display: inline-block;
+    padding: 10px 25px;
+    background: #fffdf4;
+}
 
-    .library-grid {
-        max-width: 900px;
-        margin: 40px auto;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-        gap: 30px;
-        padding: 0 20px 40px 20px;
-    }
+.library-grid {
+    max-width: 900px;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 30px;
+    padding: 0 20px 40px 20px;
+}
 
-    .card {
-        background: var(--panel);
-        border: 3px solid var(--border);
-        border-radius: 4px;
-        cursor: pointer;
-        transition: 0.2s;
-    }
+.card {
+    background: var(--panel);
+    border: 3px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.card:hover {
+    background: var(--hover);
+    transform: translateY(-4px);
+}
 
-    .card:hover {
-        background: var(--hover);
-        transform: translateY(-4px);
-    }
+.image-container {
+    height: 180px;
+    overflow: hidden;
+    border-bottom: 3px solid var(--border);
+}
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+}
 
-    .image-container {
-        height: 180px;
-        overflow: hidden;
-        border-bottom: 3px solid var(--border);
-    }
+.card-info {
+    padding: 12px 15px;
+}
+.card-info h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    border-bottom: 2px dotted var(--border);
+    padding-bottom: 5px;
+    color: var(--accent);
+}
+.card-info p {
+    margin-top: 6px;
+    font-size: 0.9rem;
+}
 
-    .image-container img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        image-rendering: pixelated;
-    }
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(2px);
+    z-index: 1000;
+}
 
-    .card-info {
-        padding: 12px 15px;
-    }
+.modal-box {
+    background: var(--panel);
+    border: 4px solid var(--border);
+    width: 85%;
+    max-width: 700px;
+    margin: auto;
+    margin-top: 5%;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 0 0 5px var(--bg), 0 0 0 8px var(--border);
+}
 
-    .card-info h3 {
-        margin: 0;
-        font-size: 1.3rem;
-        border-bottom: 2px dotted var(--border);
-        padding-bottom: 5px;
-        color: var(--accent);
-    }
+.modal-box img {
+    max-width: 100%;
+    border: 3px solid var(--border);
+    background: white;
+}
 
-    .card-info p {
-        margin-top: 6px;
-        font-size: 0.9rem;
-    }
+#image-description {
+    margin: 15px 0;
+    font-size: 1rem;
+}
 
-    .modal {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.7);
-        backdrop-filter: blur(2px);
-        z-index: 1000;
-    }
+#download-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 3px;
+    border: 2px solid var(--border);
+    font-weight: bold;
+}
+#download-btn:hover {
+    background: #8c6630;
+}
 
-    .modal-box {
-        background: var(--panel);
-        border: 4px solid var(--border);
-        width: 85%;
-        max-width: 700px;
-        margin: auto;
-        margin-top: 5%;
-        padding: 20px;
-        text-align: center;
-        box-shadow: 0 0 0 5px var(--bg), 0 0 0 8px var(--border);
-    }
-
-    .modal-box img {
-        max-width: 100%;
-        border: 3px solid var(--border);
-        background: white;
-    }
-
-    #image-description {
-        margin: 15px 0;
-        font-size: 1rem;
-    }
-
-    #download-btn {
-        display: inline-block;
-        margin-top: 10px;
-        padding: 10px 20px;
-        background: var(--accent);
-        color: #fff;
-        text-decoration: none;
-        border-radius: 3px;
-        border: 2px solid var(--border);
-        font-weight: bold;
-    }
-    #download-btn:hover {
-        background: #8c6630;
-    }
-
-    .close {
-        float: right;
-        font-size: 26px;
-        cursor: pointer;
-        color: var(--accent);
-        font-weight: bold;
-    }
-    .close:hover {
-        color: red;
-    }
+.close {
+    float: right;
+    font-size: 26px;
+    cursor: pointer;
+    color: var(--accent);
+    font-weight: bold;
+}
+.close:hover {
+    color: red;
+}
 </style>
 </head>
-
 <body>
 
 <header>
@@ -157,15 +152,98 @@
 </header>
 
 <main class="library-grid">
-    <div class="card"
-        onclick="openModal('NewJoy.png','NewJoy.png','Created on October 15, 2025. Beginning the Wallpaper Series.')">
-        <div class="image-container">
-            <img src="NewJoy.png" alt="New Joy Project">
-        </div>
-        <div class="card-info">
-            <h3>New Joy</h3>
-            <p>Initial Project File</p>
-        </div>
+    <!-- All images added as cards -->
+    <div class="card" onclick="openModal('NewJoy.png','NewJoy.png','Created on October 15, 2025. Beginning of the New Joy project.')">
+        <div class="image-container"><img src="NewJoy.png" alt="New Joy"></div>
+        <div class="card-info"><h3>New Joy</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('LostHope.png','LostHope.png','Lost Hope')">
+        <div class="image-container"><img src="LostHope.png" alt="Lost Hope"></div>
+        <div class="card-info"><h3>Lost Hope</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Something Different.png','Something Different.png','Something Different')">
+        <div class="image-container"><img src="Something Different.png" alt="Something Different"></div>
+        <div class="card-info"><h3>Something Different</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Endless Way.png','Endless Way.png','Endless Way')">
+        <div class="image-container"><img src="Endless Way.png" alt="Endless Way"></div>
+        <div class="card-info"><h3>Endless Way</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Rail Wall.png','Rail Wall.png','Rail Wall')">
+        <div class="image-container"><img src="Rail Wall.png" alt="Rail Wall"></div>
+        <div class="card-info"><h3>Rail Wall</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('High Light.png','High Light.png','High Light')">
+        <div class="image-container"><img src="High Light.png" alt="High Light"></div>
+        <div class="card-info"><h3>High Light</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Spectral Helper.png','Spectral Helper.png','Spectral Helper')">
+        <div class="image-container"><img src="Spectral Helper.png" alt="Spectral Helper"></div>
+        <div class="card-info"><h3>Spectral Helper</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Falling Sky.png','Falling Sky.png','Falling Sky')">
+        <div class="image-container"><img src="Falling Sky.png" alt="Falling Sky"></div>
+        <div class="card-info"><h3>Falling Sky</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Green Flash.png','Green Flash.png','Green Flash')">
+        <div class="image-container"><img src="Green Flash.png" alt="Green Flash"></div>
+        <div class="card-info"><h3>Green Flash</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Free Fall.png','Free Fall.png','Free Fall')">
+        <div class="image-container"><img src="Free Fall.png" alt="Free Fall"></div>
+        <div class="card-info"><h3>Free Fall</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('The Underworld.png','The Underworld.png','The Underworld')">
+        <div class="image-container"><img src="The Underworld.png" alt="The Underworld"></div>
+        <div class="card-info"><h3>The Underworld</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Tunnel Run.png','Tunnel Run.png','Tunnel Run')">
+        <div class="image-container"><img src="Tunnel Run.png" alt="Tunnel Run"></div>
+        <div class="card-info"><h3>Tunnel Run</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Up Stairs.png','Up Stairs.png','Up Stairs')">
+        <div class="image-container"><img src="Up Stairs.png" alt="Up Stairs"></div>
+        <div class="card-info"><h3>Up Stairs</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Dream Way 1.png','Dream Way 1.png','Dream Way 1')">
+        <div class="image-container"><img src="Dream Way 1.png" alt="Dream Way 1"></div>
+        <div class="card-info"><h3>Dream Way 1</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Dream Way 2.png','Dream Way 2.png','Dream Way 2')">
+        <div class="image-container"><img src="Dream Way 2.png" alt="Dream Way 2"></div>
+        <div class="card-info"><h3>Dream Way 2</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Dream Way 3.png','Dream Way 3.png','Dream Way 3')">
+        <div class="image-container"><img src="Dream Way 3.png" alt="Dream Way 3"></div>
+        <div class="card-info"><h3>Dream Way 3</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Dream Way 4.png','Dream Way 4.png','Dream Way 4')">
+        <div class="image-container"><img src="Dream Way 4.png" alt="Dream Way 4"></div>
+        <div class="card-info"><h3>Dream Way 4</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Star Shine.png','Star Shine.png','Star Shine')">
+        <div class="image-container"><img src="Star Shine.png" alt="Star Shine"></div>
+        <div class="card-info"><h3>Star Shine</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Wood Jump.png','Wood Jump.png','Wood Jump')">
+        <div class="image-container"><img src="Wood Jump.png" alt="Wood Jump"></div>
+        <div class="card-info"><h3>Wood Jump</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Block Verse.png','Block Verse.png','Block Verse')">
+        <div class="image-container"><img src="Block Verse.png" alt="Block Verse"></div>
+        <div class="card-info"><h3>Block Verse</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Final Escape.png','Final Escape.png','Final Escape')">
+        <div class="image-container"><img src="Final Escape.png" alt="Final Escape"></div>
+        <div class="card-info"><h3>Final Escape</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Red Memory.png','Red Memory.png','Red Memory')">
+        <div class="image-container"><img src="Red Memory.png" alt="Red Memory"></div>
+        <div class="card-info"><h3>Red Memory</h3><p></p></div>
+    </div>
+    <div class="card" onclick="openModal('Bread Worm.png','Bread Worm.png','Bread Worm')">
+        <div class="image-container"><img src="Bread Worm.png" alt="Bread Worm"></div>
+        <div class="card-info"><h3>Bread Worm</h3><p></p></div>
     </div>
 </main>
 
@@ -205,3 +283,4 @@ document.addEventListener("keydown", (e) => {
 
 </body>
 </html>
+
