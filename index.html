@@ -36,6 +36,7 @@
             margin-top: 10px;
             color: #ccc;
             font-style: italic;
+            font-size: 1.2rem; /* Make the new tagline stand out */
         }
 
         /* Library Grid */
@@ -56,7 +57,7 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.5);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid #333;
-            cursor: pointer; /* Indicates it's clickable */
+            cursor: pointer;
         }
 
         .card:hover {
@@ -93,72 +94,69 @@
             font-size: 0.9rem;
         }
         
-        /* Footer Removal (CSS to hide it, though we removed it in HTML) */
-        footer { display: none; }
-
-
         /* --- MODAL (POPUP) STYLES --- */
         .modal {
-            display: none; /* Hidden by default */
+            display: none; 
             position: fixed;
-            z-index: 1000; /* On top of everything */
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.9); /* Black background with opacity */
-            padding-top: 60px;
+            background-color: rgba(0, 0, 0, 0.95); /* Slightly darker background */
+        }
+
+        /* Container for the image and button */
+        .modal-content-wrapper {
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+            margin: auto;
+            max-width: 90vw; /* Use most of the viewport width */
+            max-height: 90vh; /* Use most of the viewport height */
+            text-align: center;
         }
 
         .modal-content {
-            margin: auto;
             display: block;
-            width: 80%;
-            max-width: 700px;
-        }
-
-        .modal-content img {
-            width: 100%;
-            height: auto;
-            max-height: 80vh;
-            object-fit: contain;
+            width: auto;
+            max-height: 75vh; /* Max height for the image */
+            max-width: 100%;
+            object-fit: contain; /* Ensures the whole image is visible */
         }
 
         #download-btn {
-            display: block;
-            width: 200px;
-            margin: 20px auto;
-            padding: 10px 20px;
-            text-align: center;
-            background-color: #4CAF50; /* Green Download button */
+            display: inline-block; /* Changed to inline-block for better centering */
+            margin: 20px auto 0;
+            padding: 12px 25px;
+            background-color: #4CAF50;
             color: white;
             text-decoration: none;
             border-radius: 5px;
             font-size: 1.2rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.1s;
         }
 
         #download-btn:hover {
             background-color: #388e3c;
+            transform: scale(1.05); /* Slight lift on hover */
         }
 
         .close {
             position: absolute;
-            top: 15px;
-            right: 35px;
+            top: 10px;
+            right: 20px;
             color: #f1f1f1;
-            font-size: 40px;
+            font-size: 50px; /* Larger close button */
             font-weight: bold;
             transition: 0.3s;
             cursor: pointer;
+            line-height: 1; /* Fix vertical alignment */
         }
 
         .close:hover,
         .close:focus {
-            color: #bbb;
-            text-decoration: none;
+            color: #4CAF50; /* Highlight close button */
         }
 
     </style>
@@ -167,7 +165,7 @@
 
     <header>
         <h1>The Null Spot</h1>
-        <p>A place for all things...</p>
+        <p>Where your joy leaves</p>
     </header>
 
     <main class="library-grid">
@@ -197,9 +195,11 @@
     <div id="imageModal" class="modal">
         <span class="close" onclick="closeModal()">&times;</span>
 
-        <img class="modal-content" id="modalImage">
+        <div class="modal-content-wrapper">
+            <img class="modal-content" id="modalImage">
 
-        <a id="download-btn" href="#" download>Download Image</a>
+            <a id="download-btn" href="#" download>Download Image</a>
+        </div>
     </div>
 
     <script>
@@ -214,22 +214,34 @@
             modal.style.display = "block";
             modalImage.src = imageSrc;
             
-            // Set the download link (href is the file location, download is the saved name)
+            // Set the download link
             downloadButton.href = imageSrc;
             downloadButton.download = filename; 
+
+            // Disable background scrolling when modal is open
+            document.body.style.overflow = 'hidden';
         }
 
         // Function to close the modal
         function closeModal() {
             modal.style.display = "none";
+            // Re-enable background scrolling
+            document.body.style.overflow = 'auto';
         }
 
-        // Close the modal if the user clicks anywhere outside of the image
+        // Close the modal if the user clicks anywhere outside of the image wrapper
         window.onclick = function(event) {
             if (event.target == modal) {
                 closeModal();
             }
         }
+        
+        // Listen for the Escape key to close the modal
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape" && modal.style.display === "block") {
+                closeModal();
+            }
+        });
     </script>
 
 </body>
