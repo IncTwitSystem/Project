@@ -6,6 +6,16 @@
     <title>The Null Spot</title>
     <style>
         /* --- CSS STYLES (The Look) --- */
+        
+        /* New Color Palette: Dark Navy/Black (#0d1117), Teal Accent (#00FFFF) */
+        :root {
+            --background: #0d1117;
+            --surface: #161b22;
+            --accent: #00FFFF;
+            --text-color: #ffffff;
+            --subtle-text: #8b949e;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -14,61 +24,67 @@
         }
 
         body {
-            background-color: #1a1a1a;
-            color: #ffffff;
+            background-color: var(--background);
+            color: var(--text-color);
         }
 
         header {
             text-align: center;
             padding: 50px 20px;
-            background-color: #000000;
-            border-bottom: 2px solid #555;
+            background-color: #010409; /* Even darker header */
+            border-bottom: 2px solid var(--accent);
         }
 
         header h1 {
-            font-size: 3rem;
-            color: #4CAF50;
-            letter-spacing: 5px;
+            font-size: 3.5rem; /* Slightly larger title */
+            color: var(--accent);
+            letter-spacing: 7px;
             text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5); /* Glowing effect */
         }
 
         header p {
             margin-top: 10px;
-            color: #ccc;
+            color: var(--subtle-text);
             font-style: italic;
             font-size: 1.2rem;
         }
 
-        /* Library Grid (Simplified as there is only one item) */
+        /* Library Grid */
         .library-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 30px;
-            padding: 40px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Wider card space */
+            gap: 40px; /* Increased gap */
+            padding: 50px;
             max-width: 1200px;
             margin: 0 auto;
-            justify-content: center; /* Center the single card */
+            justify-content: center;
         }
 
         /* Card Design */
         .card {
-            background-color: #252525;
-            border-radius: 8px;
+            background-color: var(--surface);
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.5);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid #333;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.6);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            border: 1px solid #30363d;
             cursor: pointer;
+            
+            /* Enable 3D transform for the hover effect */
+            transform-style: preserve-3d; 
+            position: relative; 
         }
 
+        /* Hover Effect: Card Lift and Rotate */
         .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.7);
-            border-color: #4CAF50;
+            transform: translateY(-10px) rotateY(5deg); /* Lift and slight rotation */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            border-color: var(--accent);
         }
 
         .image-container {
-            height: 200px;
+            height: 220px; /* Slightly taller image area */
             overflow: hidden;
             background-color: #000;
         }
@@ -81,21 +97,21 @@
         }
 
         .card-info {
-            padding: 15px;
+            padding: 20px;
         }
 
         .card-info h3 {
-            font-size: 1.2rem;
-            margin-bottom: 5px;
-            color: #4CAF50;
+            font-size: 1.4rem; /* Larger title font */
+            margin-bottom: 8px;
+            color: var(--accent);
         }
 
         .card-info p {
-            color: #aaa;
-            font-size: 0.9rem;
+            color: var(--subtle-text);
+            font-size: 1rem;
         }
         
-        /* --- MODAL (POPUP) STYLES --- */
+        /* --- MODAL (POPUP) STYLES - Inherits Color Scheme --- */
         .modal {
             display: none; 
             position: fixed;
@@ -104,7 +120,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.95); 
+            background-color: rgba(0, 0, 0, 0.98); /* Almost opaque */
         }
 
         .modal-content-wrapper {
@@ -123,39 +139,44 @@
             max-height: 75vh;
             max-width: 100%;
             object-fit: contain; 
+            border: 2px solid var(--accent); /* Modal image border */
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
         }
         
-        /* New: Description Text */
         #image-description {
-            color: #ddd;
-            margin: 15px auto 10px;
+            color: var(--text-color);
+            margin: 20px auto 15px;
             max-width: 80%;
-            font-size: 1.1rem;
+            font-size: 1.2rem; /* Larger description font */
+            padding: 10px;
+            background-color: var(--surface);
+            border-radius: 5px;
         }
 
 
         #download-btn {
             display: inline-block; 
             margin: 10px auto 0;
-            padding: 12px 25px;
-            background-color: #4CAF50;
-            color: white;
+            padding: 15px 30px; /* Bigger button */
+            background-color: var(--accent); 
+            color: #000000; /* Black text on bright button */
             text-decoration: none;
-            border-radius: 5px;
-            font-size: 1.2rem;
+            border-radius: 50px; /* Pill shape button */
+            font-size: 1.3rem;
+            font-weight: bold;
             transition: background-color 0.3s, transform 0.1s;
         }
 
         #download-btn:hover {
-            background-color: #388e3c;
-            transform: scale(1.05); 
+            background-color: #33FFFF; 
+            transform: scale(1.1); 
         }
 
         .close {
             position: absolute;
             top: 10px;
             right: 20px;
-            color: #f1f1f1;
+            color: var(--accent); /* Teal close button */
             font-size: 50px; 
             font-weight: bold;
             transition: 0.3s;
@@ -165,7 +186,7 @@
 
         .close:hover,
         .close:focus {
-            color: #4CAF50; 
+            color: var(--text-color); 
         }
 
     </style>
@@ -179,7 +200,7 @@
 
     <main class="library-grid">
         
-        <div class="card" onclick="openModal('NewJoy.png', 'NewJoy.png', 'This is the initial image for the New Joy project, captured on 2025-12-09.')">
+        <div class="card" onclick="openModal('NewJoy.png', 'NewJoy.png', 'Created on October 15, 2025. This file marks the start of the New Joy project.')">
             <div class="image-container">
                 <img src="NewJoy.png" alt="New Joy Project">
             </div>
@@ -209,17 +230,15 @@
         var modal = document.getElementById("imageModal");
         var modalImage = document.getElementById("modalImage");
         var downloadButton = document.getElementById("download-btn");
-        var descriptionArea = document.getElementById("image-description"); // New element reference
+        var descriptionArea = document.getElementById("image-description"); 
 
         // Function to open the modal
-        function openModal(imageSrc, filename, description) { // Added 'description' argument
+        function openModal(imageSrc, filename, description) {
             modal.style.display = "block";
             modalImage.src = imageSrc;
             
-            // Set the new description text
             descriptionArea.textContent = description; 
 
-            // Set the download link
             downloadButton.href = imageSrc;
             downloadButton.download = filename; 
 
