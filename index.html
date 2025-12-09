@@ -143,6 +143,20 @@ header h1 {
 .close:hover {
     color: red;
 }
+
+.bridge-buttons button {
+    margin: 0 5px;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 3px;
+}
+.bridge-buttons button:hover {
+    background: #8c6630;
+}
 </style>
 </head>
 <body>
@@ -152,7 +166,7 @@ header h1 {
 </header>
 
 <main class="library-grid">
-    <!-- All images added as cards -->
+    <!-- 23 images gallery -->
     <div class="card" onclick="openModal('NewJoy.png','NewJoy.png','Created on October 15, 2025. Beginning of the New Joy project.')">
         <div class="image-container"><img src="NewJoy.png" alt="New Joy"></div>
         <div class="card-info"><h3>New Joy</h3><p></p></div>
@@ -245,14 +259,36 @@ header h1 {
         <div class="image-container"><img src="Bread Worm.png" alt="Bread Worm"></div>
         <div class="card-info"><h3>Bread Worm</h3><p></p></div>
     </div>
+
+    <!-- Bridge Project -->
+    <div class="card" onclick="openBridgeModal()">
+        <div class="image-container"><img src="Bridge light.png" alt="Bridge Project"></div>
+        <div class="card-info"><h3>Bridge Project</h3><p>See different versions</p></div>
+    </div>
 </main>
 
+<!-- Regular Image Modal -->
 <div id="imageModal" class="modal" onclick="if(event.target===this) closeModal()">
     <div class="modal-box">
         <span class="close" onclick="closeModal()">&times;</span>
         <img id="modalImage">
         <p id="image-description"></p>
         <a id="download-btn" href="#" download>Download</a>
+    </div>
+</div>
+
+<!-- Bridge Project Modal -->
+<div id="bridgeModal" class="modal" onclick="if(event.target===this) closeBridgeModal()">
+    <div class="modal-box">
+        <span class="close" onclick="closeBridgeModal()">&times;</span>
+        <img id="bridgeImage">
+        <p id="bridge-description">Bridge Project - Light Version</p>
+        <div class="bridge-buttons">
+            <button onclick="switchBridge('light')">Light</button>
+            <button onclick="switchBridge('night')">Night</button>
+            <button onclick="switchBridge('day')">Day</button>
+        </div>
+        <a id="bridge-download" href="Bridge light.png" download style="margin-top:10px; display:inline-block; padding:8px 15px; background:#6b4b16; color:white; text-decoration:none; border-radius:3px;">Download</a>
     </div>
 </div>
 
@@ -276,11 +312,50 @@ function closeModal() {
     document.body.style.overflow = "auto";
 }
 
+// --- Bridge Project Modal ---
+let bridgeModal = document.getElementById("bridgeModal");
+let bridgeImage = document.getElementById("bridgeImage");
+let bridgeDescription = document.getElementById("bridge-description");
+let bridgeDownload = document.getElementById("bridge-download");
+
+function openBridgeModal() {
+    bridgeModal.style.display = "block";
+    switchBridge('light');
+    document.body.style.overflow = "hidden";
+}
+
+function closeBridgeModal() {
+    bridgeModal.style.display = "none";
+    document.body.style.overflow = "auto";
+}
+
+function switchBridge(version) {
+    if (version === 'light') {
+        bridgeImage.src = "Bridge light.png";
+        bridgeDescription.textContent = "Bridge Project - Light Version";
+        bridgeDownload.href = "Bridge light.png";
+        bridgeDownload.download = "Bridge light.png";
+    } else if (version === 'night') {
+        bridgeImage.src = "Bridge night.png";
+        bridgeDescription.textContent = "Bridge Project - Night Version";
+        bridgeDownload.href = "Bridge night.png";
+        bridgeDownload.download = "Bridge night.png";
+    } else if (version === 'day') {
+        bridgeImage.src = "Bridge day.png";
+        bridgeDescription.textContent = "Bridge Project - Day Version";
+        bridgeDownload.href = "Bridge day.png";
+        bridgeDownload.download = "Bridge day.png";
+    }
+}
+
+// Close modals with Escape
 document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeModal();
+    if (e.key === "Escape") {
+        if(modal.style.display === "block") closeModal();
+        if(bridgeModal.style.display === "block") closeBridgeModal();
+    }
 });
 </script>
 
 </body>
 </html>
-
