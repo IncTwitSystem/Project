@@ -36,7 +36,7 @@
             margin-top: 10px;
             color: #ccc;
             font-style: italic;
-            font-size: 1.2rem; /* Make the new tagline stand out */
+            font-size: 1.2rem;
         }
 
         /* Library Grid */
@@ -103,30 +103,29 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.95); /* Slightly darker background */
+            background-color: rgba(0, 0, 0, 0.95); 
         }
 
-        /* Container for the image and button */
         .modal-content-wrapper {
             position: relative;
             top: 50%;
             transform: translateY(-50%);
             margin: auto;
-            max-width: 90vw; /* Use most of the viewport width */
-            max-height: 90vh; /* Use most of the viewport height */
+            max-width: 90vw; 
+            max-height: 90vh; 
             text-align: center;
         }
 
         .modal-content {
             display: block;
             width: auto;
-            max-height: 75vh; /* Max height for the image */
+            max-height: 75vh;
             max-width: 100%;
-            object-fit: contain; /* Ensures the whole image is visible */
+            object-fit: contain; 
         }
 
         #download-btn {
-            display: inline-block; /* Changed to inline-block for better centering */
+            display: inline-block; 
             margin: 20px auto 0;
             padding: 12px 25px;
             background-color: #4CAF50;
@@ -139,7 +138,7 @@
 
         #download-btn:hover {
             background-color: #388e3c;
-            transform: scale(1.05); /* Slight lift on hover */
+            transform: scale(1.05); 
         }
 
         .close {
@@ -147,16 +146,16 @@
             top: 10px;
             right: 20px;
             color: #f1f1f1;
-            font-size: 50px; /* Larger close button */
+            font-size: 50px; 
             font-weight: bold;
             transition: 0.3s;
             cursor: pointer;
-            line-height: 1; /* Fix vertical alignment */
+            line-height: 1; 
         }
 
         .close:hover,
         .close:focus {
-            color: #4CAF50; /* Highlight close button */
+            color: #4CAF50; 
         }
 
     </style>
@@ -165,7 +164,7 @@
 
     <header>
         <h1>The Null Spot</h1>
-        <p>Where your joy leaves</p>
+        <p>Where your joy breathes</p>
     </header>
 
     <main class="library-grid">
@@ -180,13 +179,13 @@
             </div>
         </div>
 
-        <div class="card" onclick="openModal('https://via.placeholder.com/600x450/333333/ffffff?text=Image+2', 'Placeholder.png')">
+        <div class="card" onclick="openModal('?.png', 'Question_Mark.png')">
             <div class="image-container">
-                <img src="https://via.placeholder.com/400x300/333333/ffffff?text=Empty+Slot+1" alt="Placeholder">
+                <img src="https://via.placeholder.com/400x300/111111/4CAF50?text=?+Slot" alt="Placeholder">
             </div>
             <div class="card-info">
-                <h3>Next Project</h3>
-                <p>Awaiting upload...</p>
+                <h3>Unknown</h3>
+                <p>Ready for ?.png</p>
             </div>
         </div>
 
@@ -197,7 +196,6 @@
 
         <div class="modal-content-wrapper">
             <img class="modal-content" id="modalImage">
-
             <a id="download-btn" href="#" download>Download Image</a>
         </div>
     </div>
