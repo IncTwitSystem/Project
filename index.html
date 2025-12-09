@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Null Spot</title>
-
 <style>
 :root {
     --bg: #f3e8c8;
@@ -14,14 +13,12 @@
     --accent: #6b4b16;
     --hover: #eeddb6;
 }
-
 body {
     margin: 0;
     font-family: "Courier New", monospace;
     background: var(--bg);
     color: var(--text);
 }
-
 header {
     padding: 40px;
     text-align: center;
@@ -37,7 +34,6 @@ header h1 {
     padding: 10px 25px;
     background: #fffdf4;
 }
-
 .library-grid {
     max-width: 900px;
     margin: 40px auto;
@@ -46,7 +42,6 @@ header h1 {
     gap: 30px;
     padding: 0 20px 40px 20px;
 }
-
 .card {
     background: var(--panel);
     border: 3px solid var(--border);
@@ -58,7 +53,6 @@ header h1 {
     background: var(--hover);
     transform: translateY(-4px);
 }
-
 .image-container {
     height: 180px;
     overflow: hidden;
@@ -70,7 +64,6 @@ header h1 {
     object-fit: cover;
     image-rendering: pixelated;
 }
-
 .card-info {
     padding: 12px 15px;
 }
@@ -85,7 +78,6 @@ header h1 {
     margin-top: 6px;
     font-size: 0.9rem;
 }
-
 .modal {
     display: none;
     position: fixed;
@@ -94,7 +86,6 @@ header h1 {
     backdrop-filter: blur(2px);
     z-index: 1000;
 }
-
 .modal-box {
     background: var(--panel);
     border: 4px solid var(--border);
@@ -106,33 +97,33 @@ header h1 {
     text-align: center;
     box-shadow: 0 0 0 5px var(--bg), 0 0 0 8px var(--border);
 }
-
 .modal-box img {
     max-width: 100%;
     border: 3px solid var(--border);
     background: white;
 }
-
 #image-description {
     margin: 15px 0;
     font-size: 1rem;
 }
-
-#download-btn {
+/* Unified button style for modal buttons and bridge buttons */
+.modal-box .btn {
     display: inline-block;
-    margin-top: 10px;
+    margin: 5px;
     padding: 10px 20px;
     background: var(--accent);
     color: #fff;
-    text-decoration: none;
-    border-radius: 3px;
     border: 2px solid var(--border);
+    border-radius: 3px;
     font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: 0.2s;
 }
-#download-btn:hover {
+.modal-box .btn:hover {
     background: #8c6630;
 }
-
 .close {
     float: right;
     font-size: 26px;
@@ -140,23 +131,7 @@ header h1 {
     color: var(--accent);
     font-weight: bold;
 }
-.close:hover {
-    color: red;
-}
-
-.bridge-buttons button {
-    margin: 0 5px;
-    padding: 8px 15px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 3px;
-}
-.bridge-buttons button:hover {
-    background: #8c6630;
-}
+.close:hover { color: red; }
 </style>
 </head>
 <body>
@@ -165,197 +140,153 @@ header h1 {
     <h1>The Null Spot</h1>
 </header>
 
-<main class="library-grid">
-    <!-- 23 images gallery -->
-    <div class="card" onclick="openModal('NewJoy.png','NewJoy.png','Created on October 15, 2025. Beginning of the New Joy project.')">
-        <div class="image-container"><img src="NewJoy.png" alt="New Joy"></div>
-        <div class="card-info"><h3>New Joy</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('LostHope.png','LostHope.png','Lost Hope')">
-        <div class="image-container"><img src="LostHope.png" alt="Lost Hope"></div>
-        <div class="card-info"><h3>Lost Hope</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Something Different.png','Something Different.png','Something Different')">
-        <div class="image-container"><img src="Something Different.png" alt="Something Different"></div>
-        <div class="card-info"><h3>Something Different</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Endless Way.png','Endless Way.png','Endless Way')">
-        <div class="image-container"><img src="Endless Way.png" alt="Endless Way"></div>
-        <div class="card-info"><h3>Endless Way</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Rail Wall.png','Rail Wall.png','Rail Wall')">
-        <div class="image-container"><img src="Rail Wall.png" alt="Rail Wall"></div>
-        <div class="card-info"><h3>Rail Wall</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('High Light.png','High Light.png','High Light')">
-        <div class="image-container"><img src="High Light.png" alt="High Light"></div>
-        <div class="card-info"><h3>High Light</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Spectral Helper.png','Spectral Helper.png','Spectral Helper')">
-        <div class="image-container"><img src="Spectral Helper.png" alt="Spectral Helper"></div>
-        <div class="card-info"><h3>Spectral Helper</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Falling Sky.png','Falling Sky.png','Falling Sky')">
-        <div class="image-container"><img src="Falling Sky.png" alt="Falling Sky"></div>
-        <div class="card-info"><h3>Falling Sky</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Green Flash.png','Green Flash.png','Green Flash')">
-        <div class="image-container"><img src="Green Flash.png" alt="Green Flash"></div>
-        <div class="card-info"><h3>Green Flash</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Free Fall.png','Free Fall.png','Free Fall')">
-        <div class="image-container"><img src="Free Fall.png" alt="Free Fall"></div>
-        <div class="card-info"><h3>Free Fall</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('The Underworld.png','The Underworld.png','The Underworld')">
-        <div class="image-container"><img src="The Underworld.png" alt="The Underworld"></div>
-        <div class="card-info"><h3>The Underworld</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Tunnel Run.png','Tunnel Run.png','Tunnel Run')">
-        <div class="image-container"><img src="Tunnel Run.png" alt="Tunnel Run"></div>
-        <div class="card-info"><h3>Tunnel Run</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Up Stairs.png','Up Stairs.png','Up Stairs')">
-        <div class="image-container"><img src="Up Stairs.png" alt="Up Stairs"></div>
-        <div class="card-info"><h3>Up Stairs</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Dream Way 1.png','Dream Way 1.png','Dream Way 1')">
-        <div class="image-container"><img src="Dream Way 1.png" alt="Dream Way 1"></div>
-        <div class="card-info"><h3>Dream Way 1</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Dream Way 2.png','Dream Way 2.png','Dream Way 2')">
-        <div class="image-container"><img src="Dream Way 2.png" alt="Dream Way 2"></div>
-        <div class="card-info"><h3>Dream Way 2</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Dream Way 3.png','Dream Way 3.png','Dream Way 3')">
-        <div class="image-container"><img src="Dream Way 3.png" alt="Dream Way 3"></div>
-        <div class="card-info"><h3>Dream Way 3</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Dream Way 4.png','Dream Way 4.png','Dream Way 4')">
-        <div class="image-container"><img src="Dream Way 4.png" alt="Dream Way 4"></div>
-        <div class="card-info"><h3>Dream Way 4</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Star Shine.png','Star Shine.png','Star Shine')">
-        <div class="image-container"><img src="Star Shine.png" alt="Star Shine"></div>
-        <div class="card-info"><h3>Star Shine</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Wood Jump.png','Wood Jump.png','Wood Jump')">
-        <div class="image-container"><img src="Wood Jump.png" alt="Wood Jump"></div>
-        <div class="card-info"><h3>Wood Jump</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Block Verse.png','Block Verse.png','Block Verse')">
-        <div class="image-container"><img src="Block Verse.png" alt="Block Verse"></div>
-        <div class="card-info"><h3>Block Verse</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Final Escape.png','Final Escape.png','Final Escape')">
-        <div class="image-container"><img src="Final Escape.png" alt="Final Escape"></div>
-        <div class="card-info"><h3>Final Escape</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Red Memory.png','Red Memory.png','Red Memory')">
-        <div class="image-container"><img src="Red Memory.png" alt="Red Memory"></div>
-        <div class="card-info"><h3>Red Memory</h3><p></p></div>
-    </div>
-    <div class="card" onclick="openModal('Bread Worm.png','Bread Worm.png','Bread Worm')">
-        <div class="image-container"><img src="Bread Worm.png" alt="Bread Worm"></div>
-        <div class="card-info"><h3>Bread Worm</h3><p></p></div>
-    </div>
+<main class="library-grid" id="gallery"></main>
 
-    <!-- Bridge Project -->
-    <div class="card" onclick="openBridgeModal()">
-        <div class="image-container"><img src="Bridge light.png" alt="Bridge Project"></div>
-        <div class="card-info"><h3>Bridge Project</h3><p>See different versions</p></div>
-    </div>
-</main>
-
-<!-- Regular Image Modal -->
-<div id="imageModal" class="modal" onclick="if(event.target===this) closeModal()">
+<!-- Regular Modal -->
+<div id="imageModal" class="modal">
     <div class="modal-box">
         <span class="close" onclick="closeModal()">&times;</span>
         <img id="modalImage">
         <p id="image-description"></p>
-        <a id="download-btn" href="#" download>Download</a>
+        <a id="download-btn" class="btn" href="#" download>Download</a>
     </div>
 </div>
 
-<!-- Bridge Project Modal -->
-<div id="bridgeModal" class="modal" onclick="if(event.target===this) closeBridgeModal()">
+<!-- Bridge Modal -->
+<div id="bridgeModal" class="modal">
     <div class="modal-box">
         <span class="close" onclick="closeBridgeModal()">&times;</span>
         <img id="bridgeImage">
-        <p id="bridge-description">Bridge Project - Light Version</p>
+        <p id="bridge-description"></p>
         <div class="bridge-buttons">
-            <button onclick="switchBridge('light')">Light</button>
-            <button onclick="switchBridge('night')">Night</button>
-            <button onclick="switchBridge('day')">Day</button>
+            <button class="btn" onclick="switchBridge('light')">Light</button>
+            <button class="btn" onclick="switchBridge('night')">Night</button>
+            <button class="btn" onclick="switchBridge('day')">Day</button>
         </div>
-        <a id="bridge-download" href="Bridge light.png" download style="margin-top:10px; display:inline-block; padding:8px 15px; background:#6b4b16; color:white; text-decoration:none; border-radius:3px;">Download</a>
+        <a id="bridge-download" class="btn" href="#" download>Download</a>
     </div>
 </div>
 
 <script>
-let modal = document.getElementById("imageModal");
-let modalImage = document.getElementById("modalImage");
-let description = document.getElementById("image-description");
-let downloadBtn = document.getElementById("download-btn");
+// --- Data ---
+const images = [
+    {src: "NewJoy.png", title: "New Joy", desc: "Created on October 15, 2025. Beginning of the New Joy project."},
+    {src: "LostHope.png", title: "Lost Hope"},
+    {src: "Something Different.png", title: "Something Different"},
+    {src: "Endless Way.png", title: "Endless Way"},
+    {src: "Rail Wall.png", title: "Rail Wall"},
+    {src: "High Light.png", title: "High Light"},
+    {src: "Spectral Helper.png", title: "Spectral Helper"},
+    {src: "Falling Sky.png", title: "Falling Sky"},
+    {src: "Green Flash.png", title: "Green Flash"},
+    {src: "Free Fall.png", title: "Free Fall"},
+    {src: "The Underworld.png", title: "The Underworld"},
+    {src: "Tunnel Run.png", title: "Tunnel Run"},
+    {src: "Up Stairs.png", title: "Up Stairs"},
+    {src: "Dream Way 1.png", title: "Dream Way 1"},
+    {src: "Dream Way 2.png", title: "Dream Way 2"},
+    {src: "Dream Way 3.png", title: "Dream Way 3"},
+    {src: "Dream Way 4.png", title: "Dream Way 4"},
+    {src: "Star Shine.png", title: "Star Shine"},
+    {src: "Wood Jump.png", title: "Wood Jump"},
+    {src: "Block Verse.png", title: "Block Verse"},
+    {src: "Final Escape.png", title: "Final Escape"},
+    {src: "Red Memory.png", title: "Red Memory"},
+    {src: "Bread Worm.png", title: "Bread Worm"},
+];
+
+// --- Gallery render ---
+const gallery = document.getElementById("gallery");
+images.forEach(img => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.onclick = () => openModal(img.src, img.src, img.desc || "");
+    
+    const container = document.createElement("div");
+    container.className = "image-container";
+    const imageElem = document.createElement("img");
+    imageElem.src = encodeURI(img.src);
+    imageElem.alt = img.title;
+    imageElem.onerror = () => console.warn("Image failed to load:", img.src);
+    container.appendChild(imageElem);
+    
+    const info = document.createElement("div");
+    info.className = "card-info";
+    info.innerHTML = `<h3>${img.title}</h3><p>${img.desc || ""}</p>`;
+    
+    card.appendChild(container);
+    card.appendChild(info);
+    gallery.appendChild(card);
+});
+
+// Bridge Project card
+const bridgeCard = document.createElement("div");
+bridgeCard.className = "card";
+bridgeCard.onclick = openBridgeModal;
+bridgeCard.innerHTML = `
+    <div class="image-container"><img src="Bridge light.png" alt="Bridge Project"></div>
+    <div class="card-info"><h3>Bridge Project</h3><p>See different versions</p></div>
+`;
+gallery.appendChild(bridgeCard);
+
+// --- Regular Modal ---
+const modal = document.getElementById("imageModal");
+const modalImage = document.getElementById("modalImage");
+const description = document.getElementById("image-description");
+const downloadBtn = document.getElementById("download-btn");
 
 function openModal(src, file, desc) {
     modal.style.display = "block";
-    modalImage.src = src;
+    modalImage.src = encodeURI(src);
     description.textContent = desc;
-    downloadBtn.href = src;
+    downloadBtn.href = encodeURI(src);
     downloadBtn.download = file;
     document.body.style.overflow = "hidden";
 }
-
 function closeModal() {
     modal.style.display = "none";
     document.body.style.overflow = "auto";
 }
 
-// --- Bridge Project Modal ---
-let bridgeModal = document.getElementById("bridgeModal");
-let bridgeImage = document.getElementById("bridgeImage");
-let bridgeDescription = document.getElementById("bridge-description");
-let bridgeDownload = document.getElementById("bridge-download");
+// --- Bridge Project ---
+const bridgeModal = document.getElementById("bridgeModal");
+const bridgeImage = document.getElementById("bridgeImage");
+const bridgeDescription = document.getElementById("bridge-description");
+const bridgeDownload = document.getElementById("bridge-download");
+
+const bridgeVersions = {
+    light: "Bridge light.png",
+    night: "Bridge night.png",
+    day: "Bridge day.png"
+};
 
 function openBridgeModal() {
     bridgeModal.style.display = "block";
-    switchBridge('light');
+    switchBridge("light");
     document.body.style.overflow = "hidden";
 }
-
 function closeBridgeModal() {
     bridgeModal.style.display = "none";
     document.body.style.overflow = "auto";
 }
-
 function switchBridge(version) {
-    if (version === 'light') {
-        bridgeImage.src = "Bridge light.png";
-        bridgeDescription.textContent = "Bridge Project - Light Version";
-        bridgeDownload.href = "Bridge light.png";
-        bridgeDownload.download = "Bridge light.png";
-    } else if (version === 'night') {
-        bridgeImage.src = "Bridge night.png";
-        bridgeDescription.textContent = "Bridge Project - Night Version";
-        bridgeDownload.href = "Bridge night.png";
-        bridgeDownload.download = "Bridge night.png";
-    } else if (version === 'day') {
-        bridgeImage.src = "Bridge day.png";
-        bridgeDescription.textContent = "Bridge Project - Day Version";
-        bridgeDownload.href = "Bridge day.png";
-        bridgeDownload.download = "Bridge day.png";
-    }
+    const file = bridgeVersions[version];
+    if(!file) return console.warn("Invalid bridge version:", version);
+    bridgeImage.src = encodeURI(file);
+    bridgeDescription.textContent = `Bridge Project - ${version.charAt(0).toUpperCase() + version.slice(1)} Version`;
+    bridgeDownload.href = encodeURI(file);
+    bridgeDownload.download = file;
+    bridgeImage.onerror = () => console.warn("Bridge image failed to load:", file);
 }
 
-// Close modals with Escape
-document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-        if(modal.style.display === "block") closeModal();
-        if(bridgeModal.style.display === "block") closeBridgeModal();
+// Close modals with Escape key
+document.addEventListener("keydown", e => {
+    if(e.key === "Escape"){
+        if(modal.style.display==="block") closeModal();
+        if(bridgeModal.style.display==="block") closeBridgeModal();
     }
 });
 </script>
-
 </body>
 </html>
+
