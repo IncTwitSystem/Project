@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Null Spot</title>
+<title>Forgooten World</title>
+
 <style>
 :root {
     --bg: #f3e8c8;
@@ -13,18 +14,21 @@
     --accent: #6b4b16;
     --hover: #eeddb6;
 }
+
 body {
     margin: 0;
     font-family: "Courier New", monospace;
     background: var(--bg);
     color: var(--text);
 }
+
 header {
-    padding: 40px;
+    padding: 40px 20px 25px;
     text-align: center;
     background: var(--panel);
     border-bottom: 4px solid var(--border);
 }
+
 header h1 {
     font-size: 2.8rem;
     text-transform: uppercase;
@@ -33,260 +37,96 @@ header h1 {
     display: inline-block;
     padding: 10px 25px;
     background: #fffdf4;
+    margin: 0;
 }
-.library-grid {
+
+/* Navigation */
+nav {
+    margin-top: 25px;
+}
+
+nav a {
+    display: inline-block;
+    margin: 6px;
+    padding: 10px 18px;
+    background: #fffdf4;
+    color: var(--accent);
+    text-decoration: none;
+    border: 2px solid var(--border);
+    font-weight: bold;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    transition: 0.2s;
+}
+
+nav a:hover {
+    background: var(--hover);
+}
+
+/* Main content */
+main {
     max-width: 900px;
-    margin: 40px auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 30px;
-    padding: 0 20px 40px 20px;
+    margin: 70px auto;
+    padding: 0 20px;
 }
-.card {
+
+/* News Articles */
+article {
     background: var(--panel);
     border: 3px solid var(--border);
     border-radius: 4px;
-    cursor: pointer;
-    transition: 0.2s;
+    padding: 15px 20px;
+    margin-bottom: 25px;
 }
-.card:hover {
-    background: var(--hover);
-    transform: translateY(-4px);
-}
-.image-container {
-    height: 180px;
-    overflow: hidden;
-    border-bottom: 3px solid var(--border);
-}
-.image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    image-rendering: pixelated;
-}
-.card-info {
-    padding: 12px 15px;
-}
-.card-info h3 {
-    margin: 0;
-    font-size: 1.3rem;
+
+article h2 {
+    margin: 0 0 5px 0;
+    font-size: 1.5rem;
+    color: var(--accent);
     border-bottom: 2px dotted var(--border);
-    padding-bottom: 5px;
-    color: var(--accent);
+    padding-bottom: 6px;
 }
-.card-info p {
-    margin-top: 6px;
-    font-size: 0.9rem;
+
+article .date {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text);
+    margin-bottom: 10px;
+    font-style: italic;
 }
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(2px);
-    z-index: 1000;
-}
-.modal-box {
-    background: var(--panel);
-    border: 4px solid var(--border);
-    width: 85%;
-    max-width: 700px;
-    margin: auto;
-    margin-top: 5%;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 0 0 5px var(--bg), 0 0 0 8px var(--border);
-}
-.modal-box img {
-    max-width: 100%;
-    border: 3px solid var(--border);
-    background: white;
-}
-#image-description {
-    margin: 15px 0;
+
+article p {
+    margin: 0;
     font-size: 1rem;
+    line-height: 1.4;
 }
-/* Unified button style for modal buttons and bridge buttons */
-.modal-box .btn {
-    display: inline-block;
-    margin: 5px;
-    padding: 10px 20px;
-    background: var(--accent);
-    color: #fff;
-    border: 2px solid var(--border);
-    border-radius: 3px;
-    font-weight: bold;
-    cursor: pointer;
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: 0.2s;
-}
-.modal-box .btn:hover {
-    background: #8c6630;
-}
-.close {
-    float: right;
-    font-size: 26px;
-    cursor: pointer;
-    color: var(--accent);
-    font-weight: bold;
-}
-.close:hover { color: red; }
 </style>
 </head>
+
 <body>
 
 <header>
-    <h1>The Null Spot</h1>
+    <h1>Forgooten World</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="images.html">Images</a>
+        <a href="projects.html">Projects</a>
+        <a href="#">Coming Soon</a>
+    </nav>
 </header>
 
-<main class="library-grid" id="gallery"></main>
-
-<!-- Regular Modal -->
-<div id="imageModal" class="modal">
-    <div class="modal-box">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <img id="modalImage">
-        <p id="image-description"></p>
-        <a id="download-btn" class="btn" href="#" download>Download</a>
-    </div>
-</div>
-
-<!-- Bridge Modal -->
-<div id="bridgeModal" class="modal">
-    <div class="modal-box">
-        <span class="close" onclick="closeBridgeModal()">&times;</span>
-        <img id="bridgeImage">
-        <p id="bridge-description"></p>
-        <div class="bridge-buttons">
-            <button class="btn" onclick="switchBridge('light')">Light</button>
-            <button class="btn" onclick="switchBridge('night')">Night</button>
-            <button class="btn" onclick="switchBridge('day')">Day</button>
-        </div>
-        <a id="bridge-download" class="btn" href="#" download>Download</a>
-    </div>
-</div>
-
-<script>
-// --- Data ---
-const images = [
-    {src: "NewJoy.png", title: "New Joy", desc: "Created on October 15, 2025. Beginning of the New Joy project."},
-    {src: "LostHope.png", title: "Lost Hope"},
-    {src: "Something Different.png", title: "Something Different"},
-    {src: "Endless Way.png", title: "Endless Way"},
-    {src: "Rail Wall.png", title: "Rail Wall"},
-    {src: "High Light.png", title: "High Light"},
-    {src: "Spectral Helper.png", title: "Spectral Helper"},
-    {src: "Falling Sky.png", title: "Falling Sky"},
-    {src: "Green Flash.png", title: "Green Flash"},
-    {src: "Free Fall.png", title: "Free Fall"},
-    {src: "The Underworld.png", title: "The Underworld"},
-    {src: "Tunnel Run.png", title: "Tunnel Run"},
-    {src: "Up Stairs.png", title: "Up Stairs"},
-    {src: "Dream Way 1.png", title: "Dream Way 1"},
-    {src: "Dream Way 2.png", title: "Dream Way 2"},
-    {src: "Dream Way 3.png", title: "Dream Way 3"},
-    {src: "Dream Way 4.png", title: "Dream Way 4"},
-    {src: "Star Shine.png", title: "Star Shine"},
-    {src: "Wood Jump.png", title: "Wood Jump"},
-    {src: "Block Verse.png", title: "Block Verse"},
-    {src: "Final Escape.png", title: "Final Escape"},
-    {src: "Red Memory.png", title: "Red Memory"},
-    {src: "Bread Worm.png", title: "Bread Worm"},
-];
-
-// --- Gallery render ---
-const gallery = document.getElementById("gallery");
-images.forEach(img => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.onclick = () => openModal(img.src, img.src, img.desc || "");
+<main>
+    <!-- News Section -->
+    <article>
+        <h2>Welcome to Forgooten World</h2>
+        <span class="date">December 21, 2025</span>
+        <p>This is Warning if you have already seen it you can turn back.</p>
+    </article>
     
-    const container = document.createElement("div");
-    container.className = "image-container";
-    const imageElem = document.createElement("img");
-    imageElem.src = encodeURI(img.src);
-    imageElem.alt = img.title;
-    imageElem.onerror = () => console.warn("Image failed to load:", img.src);
-    container.appendChild(imageElem);
-    
-    const info = document.createElement("div");
-    info.className = "card-info";
-    info.innerHTML = `<h3>${img.title}</h3><p>${img.desc || ""}</p>`;
-    
-    card.appendChild(container);
-    card.appendChild(info);
-    gallery.appendChild(card);
-});
+</main>
 
-// Bridge Project card
-const bridgeCard = document.createElement("div");
-bridgeCard.className = "card";
-bridgeCard.onclick = openBridgeModal;
-bridgeCard.innerHTML = `
-    <div class="image-container"><img src="Bridge light.png" alt="Bridge Project"></div>
-    <div class="card-info"><h3>Bridge Project</h3><p>See different versions</p></div>
-`;
-gallery.appendChild(bridgeCard);
-
-// --- Regular Modal ---
-const modal = document.getElementById("imageModal");
-const modalImage = document.getElementById("modalImage");
-const description = document.getElementById("image-description");
-const downloadBtn = document.getElementById("download-btn");
-
-function openModal(src, file, desc) {
-    modal.style.display = "block";
-    modalImage.src = encodeURI(src);
-    description.textContent = desc;
-    downloadBtn.href = encodeURI(src);
-    downloadBtn.download = file;
-    document.body.style.overflow = "hidden";
-}
-function closeModal() {
-    modal.style.display = "none";
-    document.body.style.overflow = "auto";
-}
-
-// --- Bridge Project ---
-const bridgeModal = document.getElementById("bridgeModal");
-const bridgeImage = document.getElementById("bridgeImage");
-const bridgeDescription = document.getElementById("bridge-description");
-const bridgeDownload = document.getElementById("bridge-download");
-
-const bridgeVersions = {
-    light: "Bridge light.png",
-    night: "Bridge night.png",
-    day: "Bridge day.png"
-};
-
-function openBridgeModal() {
-    bridgeModal.style.display = "block";
-    switchBridge("light");
-    document.body.style.overflow = "hidden";
-}
-function closeBridgeModal() {
-    bridgeModal.style.display = "none";
-    document.body.style.overflow = "auto";
-}
-function switchBridge(version) {
-    const file = bridgeVersions[version];
-    if(!file) return console.warn("Invalid bridge version:", version);
-    bridgeImage.src = encodeURI(file);
-    bridgeDescription.textContent = `Bridge Project - ${version.charAt(0).toUpperCase() + version.slice(1)} Version`;
-    bridgeDownload.href = encodeURI(file);
-    bridgeDownload.download = file;
-    bridgeImage.onerror = () => console.warn("Bridge image failed to load:", file);
-}
-
-// Close modals with Escape key
-document.addEventListener("keydown", e => {
-    if(e.key === "Escape"){
-        if(modal.style.display==="block") closeModal();
-        if(bridgeModal.style.display==="block") closeBridgeModal();
-    }
-});
-</script>
 </body>
+</html>
+
 </html>
 
