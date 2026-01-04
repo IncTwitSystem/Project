@@ -277,7 +277,10 @@ bridgeCard.className = "card";
 bridgeCard.onclick = openBridgeModal;
 bridgeCard.innerHTML = `
     <div class="image-container"><img src="Bridge light.png" alt="Bridge Project"></div>
-    <div class="card-info"><h3>Bridge Project</h3><p>See different versions</p></div>
+    <div class="card-info">
+        <h3>Bridge Project</h3>
+        <p>These are 3 different Bridges for somebody.</p>
+    </div>
 `;
 gallery.appendChild(bridgeCard);
 
@@ -307,9 +310,9 @@ const bridgeDescription = document.getElementById("bridge-description");
 const bridgeDownload = document.getElementById("bridge-download");
 
 const bridgeVersions = {
-    light: "Bridge light.png",
-    night: "Bridge night.png",
-    day: "Bridge day.png"
+    light: {file: "Bridge light.png", desc: "Bridge Project - Light Version is the newest one and the moon is the only thing that connects with real life."},
+    night: {file: "Bridge night.png", desc: "Bridge Project - Night Version is nice but it is missing something."},
+    day: {file: "Bridge day.png", desc: "Bridge Project - Day Version The day version is the first and if you look closely you can spot something."}
 };
 
 function openBridgeModal() {
@@ -322,12 +325,12 @@ function closeBridgeModal() {
     document.body.style.overflow = "auto";
 }
 function switchBridge(version) {
-    const file = bridgeVersions[version];
-    if(!file) return console.warn("Invalid bridge version:", version);
-    bridgeImage.src = encodeURI(file);
-    bridgeDescription.textContent = `Bridge Project - ${version.charAt(0).toUpperCase() + version.slice(1)} Version`;
-    bridgeDownload.href = encodeURI(file);
-    bridgeDownload.download = file;
+    const bridge = bridgeVersions[version];
+    if(!bridge) return console.warn("Invalid bridge version:", version);
+    bridgeImage.src = encodeURI(bridge.file);
+    bridgeDescription.textContent = bridge.desc;
+    bridgeDownload.href = encodeURI(bridge.file);
+    bridgeDownload.download = bridge.file;
 }
 
 // --- Close modals with Escape ---
