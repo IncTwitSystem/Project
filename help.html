@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hand of Atlas</title>
+<link rel="icon" type="image/png" href="Icon.png">
+<style>
+:root {
+--bg: #f3e8c8;
+--panel: #fff9e6;
+--border: #b89b5e;
+--text: #2b2416;
+--accent: #6b4b16;
+--hover: #eeddb6;
+--match-highlight: #fff0c8;
+}
+body {
+margin: 0;
+font-family: "Courier New", monospace;
+background: var(--bg);
+color: var(--text);
+overflow-x: hidden;
+min-height: 100vh;
+position: relative;
+}
+/* Animation Containers */
+#cornerAnimationContainer, #fallAnimationContainer {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+pointer-events: none;
+z-index: 1000;
+display: none;
+}
+/* Corner image */
+#cornerImage {
+position: absolute;
+top: 20px;
+right: -200px; /* Start off-screen to the right */
+width: 200px;
+height: 200px;
+object-fit: contain;
+z-index: 1001;
+}
+/* Fall image */
+#fallImage {
+position: absolute;
+top: -150px; /* Start above the screen */
+width: 150px;
+height: 150px;
+object-fit: contain;
+z-index: 1001;
+}
+header {
+padding: 40px 20px 25px;
+text-align: center;
+background: var(--panel);
+border-bottom: 4px solid var(--border);
+position: relative;
+z-index: 2;
+}
+header h1 {
+font-size: 2.8rem;
+text-transform: uppercase;
+letter-spacing: 4px;
+border: 3px double var(--border);
+display: inline-block;
+padding: 10px 25px;
+background: #fffdf4;
+margin: 0;
+}
+/* Navigation */
+nav {
+margin-top: 25px;
+}
+nav a {
+display: inline-block;
+margin: 6px;
+padding: 10px 18px;
+background: #fffdf4;
+color: var(--accent);
+text-decoration: none;
+border: 2px solid var(--border);
+font-weight: bold;
+font-size: 0.9rem;
+letter-spacing: 1px;
+transition: 0.2s;
+}
+nav a:hover {
+background: var(--hover);
+}
+/* Main content */
+main {
+max-width: 900px;
+margin: 50px auto;
+padding: 0 20px;
+position: relative;
+z-index: 1;
+}
+.help-intro {
+text-align: center;
+margin-bottom: 40px;
+padding: 20px;
+background: var(--panel);
+border: 2px solid var(--border);
+}
+.help-intro h2 {
+margin-top: 0;
+color: var(--accent);
+font-size: 1.8rem;
+}
+/* Search area */
+.search-container {
+background: var(--panel);
+border: 2px solid var(--border);
+padding: 25px;
+margin-bottom: 30px;
+}
+.search-box {
+display: flex;
+gap: 10px;
+margin-bottom: 20px;
+}
+#questionInput {
+flex: 1;
+padding: 12px 15px;
+font-family: "Courier New", monospace;
+font-size: 1rem;
+border: 2px solid var(--border);
+background: #fffdf4;
+color: var(--text);
+}
+#questionInput:focus {
+outline: none;
+border-color: var(--accent);
+}
+#searchBtn, .clear-btn {
+padding: 12px 25px;
+background: var(--accent);
+color: white;
+border: 2px solid var(--border);
+font-family: "Courier New", monospace;
+font-weight: bold;
+cursor: pointer;
+transition: 0.2s;
+}
+#searchBtn:hover {
+background: #8a5f1e;
+}
+.clear-btn {
+background: #a67c52;
+}
+.clear-btn:hover {
+background: #8a5f1e;
+}
+/* Results area */
+.results-container {
+display: none;
+}
+.results-container.show {
+display: block;
+}
+.results-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 20px;
+padding-bottom: 10px;
+border-bottom: 2px solid var(--border);
+}
+.results-header h3 {
+margin: 0;
+color: var(--accent);
+}
+#matchCount {
+font-weight: bold;
+color: var(--accent);
+}
+.no-results {
+text-align: center;
+padding: 40px 20px;
+background: var(--panel);
+border: 2px solid var(--border);
+}
+.no-results p {
+margin: 0 0 20px 0;
+font-size: 1.1rem;
+}
+/* Result items */
+.result-item {
+background: var(--panel);
+border: 2px solid var(--border);
+margin-bottom: 15px;
+padding: 20px;
+transition: transform 0.2s;
+}
+.result-item:hover {
+transform: translateY(-2px);
+box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+.match-score {
+display: inline-block;
+padding: 3px 8px;
+background: var(--accent);
+color: white;
+font-size: 0.8rem;
+font-weight: bold;
+margin-bottom: 10px;
+}
+.result-item h4 {
+margin: 0 0 10px 0;
+color: var(--accent);
+font-size: 1.2rem;
+}
+.result-item .answer {
+margin: 0;
+line-height: 1.5;
+}
+.matched-keywords {
+margin-top: 10px;
+font-size: 0.9rem;
+color: #666;
+}
+.matched-keywords span {
+display: inline-block;
+background: var(--match-highlight);
+padding: 2px 6px;
+margin: 2px;
+border-radius: 3px;
+}
+/* Instructions */
+.instructions {
+margin-top: 50px;
+padding: 25px;
+background: var(--panel);
+border: 2px solid var(--border);
+}
+.instructions h3 {
+margin-top: 0;
+color: var(--accent);
+}
+code {
+background: #fffdf4;
+padding: 2px 5px;
+border: 1px solid var(--border);
+font-family: monospace;
+display: inline-block;
+margin: 5px 0;
+}
+pre {
+background: #fffdf4;
+padding: 15px;
+border: 1px solid var(--border);
+overflow-x: auto;
+}
+.highlight {
+background-color: var(--match-highlight);
+padding: 1px 3px;
+}
+</style>
+</head>
+<body>
+<!-- Animation Containers (Top animation removed) -->
+<div id="cornerAnimationContainer">
+<img id="cornerImage" src="Corner.png" alt="Corner Animation">
+</div>
+<div id="fallAnimationContainer">
+<img id="fallImage" src="fall.png" alt="Falling Animation">
+</div>
+
+<header>
+<h1>Hand of Atlas</h1>
+<nav>
+<a href="index.html">Home</a>
+<a href="images.html">Images</a>
+<a href="projects.html">Projects</a>
+<a href="experiments.html">Experiments</a>
+<a href="help.html">Help</a>
+</nav>
+</header>
+<main>
+<div class="search-container">
+<div class="search-box">
+<input type="text" id="questionInput" placeholder="Type your question here">
+<button id="searchBtn">Find Answers</button>
+<button id="clearBtn" class="clear-btn">Clear</button>
+</div>
+<p><strong>Tip:</strong> Try questions like "How do I get started?" or "Is there a mobile app?"</p>
+</div>
+<div class="results-container" id="resultsContainer">
+<div class="results-header">
+<h3>Matching Answers</h3>
+<div id="matchCount">0 matches found</div>
+</div>
+<div id="resultsList">
+<!-- Results will be inserted here by JavaScript -->
+</div>
+</div>
+<div class="no-results" id="noResults">
+<p>No questions asked yet. Type your question above and click "Find Answers".</p>
+<p><em>Example: What is the hand of atlas?</em></p>
+</div>
+</main>
+<script>
+// Help database
+const helpData = [
+    {
+question: "What is the Hand of Atlas?",
+answer: "The Hand of Atlas is a continent in a forgotten world.",
+keywords: ["atlas", "hand of atlas"]
+    },
+    {
+question: "Who is Atlas?",
+answer: "Atlas is a God from the Forgotten world.",
+keywords: ["atlas", "god"]
+    },
+];
+
+// DOM elements
+const questionInput = document.getElementById('questionInput');
+const searchBtn = document.getElementById('searchBtn');
+const clearBtn = document.getElementById('clearBtn');
+const resultsContainer = document.getElementById('resultsContainer');
+const resultsList = document.getElementById('resultsList');
+const noResults = document.getElementById('noResults');
+const matchCount = document.getElementById('matchCount');
+
+// Animation elements (top removed)
+const cornerAnimationContainer = document.getElementById('cornerAnimationContainer');
+const cornerImage = document.getElementById('cornerImage');
+const fallAnimationContainer = document.getElementById('fallAnimationContainer');
+const fallImage = document.getElementById('fallImage');
+
+// Animation 1: Corner animation
+function playCornerAnimation() {
+    cornerImage.style.right = '-200px';
+    cornerAnimationContainer.style.display = 'block';
+
+    let position = -200;
+    const speed = 15;
+    const halfwayPoint = window.innerWidth / 2 - 100;
+
+    const animate = () => {
+        if (position < halfwayPoint) {
+            position += speed;
+            cornerImage.style.right = `-${200 - position}px`;
+            requestAnimationFrame(animate);
+        } else if (position < halfwayPoint + 100) {
+            position += 1;
+            setTimeout(() => {
+                const animateBack = () => {
+                    if (position > -200) {
+                        position -= speed;
+                        cornerImage.style.right = `-${200 - position}px`;
+                        requestAnimationFrame(animateBack);
+                    } else {
+                        cornerAnimationContainer.style.display = 'none';
+                    }
+                };
+                animateBack();
+            }, 300);
+        }
+    };
+    animate();
+}
+
+// Animation 2: Fall animation
+function playFallAnimation() {
+    const randomX = Math.random() * (window.innerWidth - 150);
+    fallImage.style.top = '-150px';
+    fallImage.style.left = `${randomX}px`;
+    fallImage.style.transform = 'none';
+    fallImage.style.opacity = '1';
+    fallAnimationContainer.style.display = 'block';
+
+    let position = -150;
+    const fallSpeed = 18;
+    const fallThrough = () => {
+        if (position < window.innerHeight) {
+            position += fallSpeed;
+            const rotation = (position / 10) % 360;
+            fallImage.style.transform = `rotate(${rotation}deg)`;
+            fallImage.style.top = `${position}px`;
+            requestAnimationFrame(fallThrough);
+        } else {
+            let opacity = 1;
+            const fadeOut = () => {
+                if (opacity > 0) {
+                    opacity -= 0.1;
+                    fallImage.style.opacity = opacity;
+                    setTimeout(fadeOut, 30);
+                } else {
+                    fallAnimationContainer.style.display = 'none';
+                    fallImage.style.opacity = '1';
+                    fallImage.style.transform = 'none';
+                }
+            };
+            fadeOut();
+        }
+    };
+    fallThrough();
+}
+
+// Randomly play one of the remaining 2 animations (10% total chance → ~5% each)
+function maybePlayAnimation() {
+    const randomChance = Math.random();
+    if (randomChance < 0.1) { // still 10% total chance
+        const animationChoice = Math.random();
+        if (animationChoice < 0.5) {
+            playCornerAnimation();
+        } else {
+            playFallAnimation();
+        }
+    }
+}
+
+// Rest of the script unchanged...
+function findMatches(userQuestion) {
+    if (!userQuestion.trim()) return [];
+    const userWords = userQuestion.toLowerCase()
+        .replace(/[^\w\s]/g, ' ')
+        .split(/\s+/)
+        .filter(word => word.length > 2);
+    const matches = [];
+    helpData.forEach(item => {
+        let score = 0;
+        const matchedKeywords = [];
+        item.keywords.forEach(keyword => {
+            const keywordLower = keyword.toLowerCase();
+            if (userWords.some(word => keywordLower.includes(word) || word.includes(keywordLower))) {
+                score += 3;
+                matchedKeywords.push(keyword);
+            }
+            if (keywordLower.includes(' ') && userQuestion.toLowerCase().includes(keywordLower)) {
+                score += 5;
+                if (!matchedKeywords.includes(keyword)) {
+                    matchedKeywords.push(keyword);
+                }
+            }
+        });
+        const questionWords = item.question.toLowerCase().split(/\s+/);
+        userWords.forEach(userWord => {
+            if (questionWords.some(qWord => qWord.includes(userWord) || userWord.includes(qWord))) {
+                score += 2;
+            }
+        });
+        if (score > 0) {
+            matches.push({
+                ...item,
+                score,
+                matchedKeywords
+            });
+        }
+    });
+    return matches.sort((a, b) => b.score - a.score);
+}
+
+function highlightMatches(text, keywords) {
+    let highlighted = text;
+    keywords.forEach(keyword => {
+        const regex = new RegExp(`(${keyword})`, 'gi');
+        highlighted = highlighted.replace(regex, '<span class="highlight">$1</span>');
+    });
+    return highlighted;
+}
+
+function displayResults(matches) {
+    if (matches.length === 0) {
+        resultsContainer.classList.remove('show');
+        noResults.style.display = 'block';
+        return;
+    }
+    noResults.style.display = 'none';
+    resultsContainer.classList.add('show');
+    matchCount.textContent = `${matches.length} ${matches.length === 1 ? 'match' : 'matches'} found`;
+    resultsList.innerHTML = '';
+    matches.forEach(match => {
+        const resultItem = document.createElement('div');
+        resultItem.className = 'result-item';
+        const matchPercent = Math.min(95, Math.round((match.score / 20) * 100));
+        const highlightedQuestion = highlightMatches(match.question, match.matchedKeywords);
+        const highlightedAnswer = highlightMatches(match.answer, match.matchedKeywords);
+        resultItem.innerHTML = `
+            <div class="match-score">Match: ${matchPercent}%</div>
+            <h4>${highlightedQuestion}</h4>
+            <div class="answer">${highlightedAnswer}</div>
+            ${match.matchedKeywords.length > 0 ?
+                `<div class="matched-keywords">
+                    <strong>Matched keywords:</strong>
+                    ${match.matchedKeywords.map(kw => `<span>${kw}</span>`).join('')}
+                </div>` : ''
+            }
+        `;
+        resultsList.appendChild(resultItem);
+    });
+}
+
+// Event listeners
+searchBtn.addEventListener('click', () => {
+    const userQuestion = questionInput.value.trim();
+    maybePlayAnimation();
+    if (userQuestion) {
+        const matches = findMatches(userQuestion);
+        displayResults(matches);
+    } else {
+        resultsContainer.classList.remove('show');
+        noResults.style.display = 'block';
+    }
+});
+
+questionInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        searchBtn.click();
+    }
+});
+
+clearBtn.addEventListener('click', () => {
+    questionInput.value = '';
+    resultsContainer.classList.remove('show');
+    noResults.style.display = 'block';
+    questionInput.focus();
+});
+
+window.addEventListener('load', () => {
+    noResults.style.display = 'block';
+    resultsContainer.classList.remove('show');
+    questionInput.focus();
+});
+</script>
+</body>
+</html>
