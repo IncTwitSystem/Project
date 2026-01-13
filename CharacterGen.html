@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hand of Atlas</title>
+<style>
+:root {
+    --bg: #f3e8c8;
+    --panel: #fff9e6;
+    --border: #b89b5e;
+    --text: #2b2416;
+    --accent: #6b4b16;
+    --hover: #eeddb6;
+}
+body {
+    margin: 0;
+    font-family: "Courier New", monospace;
+    background: var(--bg);
+    color: var(--text);
+}
+header {
+    padding: 40px 20px 25px;
+    text-align: center;
+    background: var(--panel);
+    border-bottom: 4px solid var(--border);
+}
+header h1 {
+    font-size: 2.8rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    border: 3px double var(--border);
+    display: inline-block;
+    padding: 10px 25px;
+    background: #fffdf4;
+    margin: 0;
+}
+nav {
+    margin-top: 25px;
+}
+nav a {
+    display: inline-block;
+    margin: 6px;
+    padding: 10px 18px;
+    background: #fffdf4;
+    color: var(--accent);
+    text-decoration: none;
+    border: 2px solid var(--border);
+    font-weight: bold;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    transition: 0.2s;
+}
+nav a:hover {
+    background: var(--hover);
+}
+main {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 20px;
+}
+.container {
+    text-align: center;
+    background: var(--panel);
+    padding: 40px;
+    border: 3px solid var(--border);
+}
+.container h2 {
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--accent);
+}
+.step-info {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    color: var(--text);
+    letter-spacing: 1px;
+}
+.wheel-container {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    margin: 0 auto 30px;
+}
+#wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 4px solid var(--border);
+    position: relative;
+    transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+    background: #fffdf4;
+}
+.pointer {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 40px solid var(--accent);
+    z-index: 10;
+}
+button {
+    background: #fffdf4;
+    color: var(--accent);
+    border: 2px solid var(--border);
+    padding: 12px 30px;
+    font-size: 1rem;
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.2s;
+    text-transform: uppercase;
+    margin: 5px;
+}
+button:hover:not(:disabled) {
+    background: var(--hover);
+}
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+#result {
+    margin-top: 25px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--accent);
+    min-height: 30px;
+    letter-spacing: 2px;
+}
+.character-summary {
+    margin-top: 30px;
+    padding: 20px;
+    background: #fffdf4;
+    border: 2px solid var(--border);
+    text-align: left;
+}
+.character-summary h3 {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 0;
+    color: var(--accent);
+}
+.character-summary p {
+    margin: 10px 0;
+    font-size: 1rem;
+}
+</style>
+</head>
+<body>
+<header>
+    <h1>Hand of Atlas</h1>
+    <nav>
+        <a href="experiments.html">Back</a>
+    </nav>
+</header>
+<main>
+    <div class="container">
+        <h2>Character Creator</h2>
+        <div class="step-info" id="stepInfo">Step 1 of 3: Choose Personality Trait</div>
+        
+        <div class="wheel-container">
+            <div class="pointer"></div>
+            <canvas id="wheel" width="400" height="400"></canvas>
+        </div>
+
+        <button id="spinBtn" onclick="spin()">Spin the Wheel</button>
+        <button id="skipBtn" onclick="skipAnimation()" style="display: none;">Skip Animation</button>
+        <button id="nextBtn" onclick="nextStep()" style="display: none;">Continue to Next Step</button>
+        <div id="result"></div>
+
+        <div class="character-summary" id="characterSummary" style="display: none;">
+            <h3>Character Summary</h3>
+            <p><strong>Personality Trait:</strong> <span id="traitResult">-</span></p>
+            <p><strong>Character Flaw:</strong> <span id="flawResult">-</span></p>
+            <p><strong>Character Talent:</strong> <span id="talentResult">-</span></p>
+            <p><strong>Magical Talent:</strong> <span id="magicResult">None</span></p>
+            <p><strong>Weapon Talent:</strong> <span id="weaponResult">None</span></p>
+        </div>
+    </div>
+</main>
+
+<script>
+let currentStep = 1;
+let spinning = false;
+let currentRotation = 0;
+let spinTimeout = null;
+let characterData = {
+    trait: '',
+    flaw: '',
+    talent: '',
+    magicTalent: '',
+    weaponTalent: ''
+};
+
+const wheelSteps = [
+    {
+        title: 'Choose Dominant Personality Trait',
+        options: ['Brave', 'Cautious', 'Curious', 'Creative', 'Loyal', 'Independent', 'Ambitious', 'Humble', 'Charismatic', 'Reserved', 'Honest', 'Cunning', 'Compassionate', 'Stern', 'Playful', 'Serious']
+    },
+    {
+        title: 'Choose Dominant Character Flaw',
+        options: ['Impulsive', 'Stubborn', 'Arrogant', 'Naive', 'Jealous', 'Cowardly', 'Greedy', 'Lazy', 'Distrustful', 'Perfectionist', 'Vengeful', 'Indecisive']
+    },
+    {
+        title: 'Choose Dominant Character Talent',
+        options: ['Weapon Master', 'Cook Master', 'Magic Master', 'Alchemy Master', 'Navigation Master', 'Leadership Master', 'Crafting Master', 'Animal tame Master', 'Stealth Master', 'Trading Master', 'Fishing Master', 'Farming Master', 'Building Master', 'Mining Master', 'Hunting Master', 'Survival Master', 'Engineering Master', 'Artisan Master', 'Music Master', 'Healing Master']
+    },
+    {
+        title: 'Choose Dominant Magic Talent',
+        options: ['Fire Magic', 'Water Magic', 'Earth Magic', 'Air Magic', 'Lightning Magic', 'Ice Magic', 'Light Magic', 'Dark Magic', 'Healing Magic', 'Necromancy Magic', 'Enchanting Magic', 'Illusion Magic', 'Summoning Magic', 'Divination Magic', 'Telekinesis Magic', 'Time Magic', 'Space Magic', 'Nature Magic', 'Sound Magic', 'Shadow Magic', 'Chaos Magic', 'Order Magic', 'Spirit Magic', 'Blood Magic', 'Rune Magic', 'Astral Magic', 'Dream Magic', 'Void Magic', 'Elemental Magic', 'Arcane Magic', 'Psionic Magic', 'Transmutation Magic']
+    },
+    {
+        title: 'Choose Dominant Weapon Talent',
+        options: ['Sword Master', 'Bow Master', 'Axe Master', 'Spear Master', 'Mace Master', 'Dagger Master', 'Whip Master', 'Staff Master', 'Crossbow Master', 'Hammer Master', 'Flail Master', 'Halberd Master', 'Scythe Master']
+    }
+];
+
+const colors = ['#d4b896', '#c9a66b', '#b89b5e', '#a88d51', '#987f44', '#8b7239', '#7d6530', '#6b4b16', '#5a3d12', '#4a310e'];
+
+function drawWheel() {
+    const canvas = document.getElementById('wheel');
+    const ctx = canvas.getContext('2d');
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = canvas.width / 2 - 10;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const options = wheelSteps[currentStep - 1].options;
+    const sliceAngle = (2 * Math.PI) / options.length;
+
+    options.forEach((option, i) => {
+        const startAngle = i * sliceAngle;
+        const endAngle = startAngle + sliceAngle;
+
+        // Draw slice
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+        ctx.closePath();
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.fill();
+        ctx.strokeStyle = '#b89b5e';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Draw text
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(startAngle + sliceAngle / 2);
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#2b2416';
+        ctx.font = 'bold 11px "Courier New"';
+        ctx.fillText(option, radius * 0.65, 5);
+        ctx.restore();
+    });
+
+    // Draw center circle
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 25, 0, 2 * Math.PI);
+    ctx.fillStyle = '#6b4b16';
+    ctx.fill();
+    ctx.strokeStyle = '#b89b5e';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+}
+
+function spin() {
+    if (spinning) return;
+    
+    spinning = true;
+    document.getElementById('spinBtn').disabled = true;
+    document.getElementById('skipBtn').style.display = 'inline-block';
+    document.getElementById('result').textContent = '';
+    document.getElementById('nextBtn').style.display = 'none';
+
+    const canvas = document.getElementById('wheel');
+    const randomSpins = 5 + Math.random() * 5;
+    const randomDegree = Math.random() * 360;
+    const totalRotation = randomSpins * 360 + randomDegree;
+
+    currentRotation += totalRotation;
+    canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+    spinTimeout = setTimeout(() => {
+        finishSpin();
+    }, 4000);
+}
+
+function skipAnimation() {
+    if (!spinning) return;
+    
+    // Clear the timeout
+    if (spinTimeout) {
+        clearTimeout(spinTimeout);
+    }
+    
+    // Instantly complete the rotation
+    const canvas = document.getElementById('wheel');
+    canvas.style.transition = 'none';
+    canvas.style.transform = `rotate(${currentRotation}deg)`;
+    
+    // Force reflow
+    canvas.offsetHeight;
+    
+    // Re-enable transition for future spins
+    canvas.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+    
+    finishSpin();
+}
+
+function finishSpin() {
+    const options = wheelSteps[currentStep - 1].options;
+    const normalizedRotation = currentRotation % 360;
+    const sliceAngle = 360 / options.length;
+    const pointerAngle = 270;
+    const adjustedRotation = (pointerAngle - normalizedRotation + 360) % 360;
+    const selectedIndex = Math.floor(adjustedRotation / sliceAngle) % options.length;
+    const selectedOption = options[selectedIndex];
+    
+    // Store result
+    if (currentStep === 1) {
+        characterData.trait = selectedOption;
+        document.getElementById('traitResult').textContent = selectedOption;
+    } else if (currentStep === 2) {
+        characterData.flaw = selectedOption;
+        document.getElementById('flawResult').textContent = selectedOption;
+    } else if (currentStep === 3) {
+        characterData.talent = selectedOption;
+        document.getElementById('talentResult').textContent = selectedOption;
+    } else if (currentStep === 4) {
+        characterData.magicTalent = selectedOption;
+        document.getElementById('magicResult').textContent = selectedOption;
+    } else if (currentStep === 5) {
+        characterData.weaponTalent = selectedOption;
+        document.getElementById('weaponResult').textContent = selectedOption;
+    }
+
+    document.getElementById('result').textContent = `Selected: ${selectedOption}`;
+    document.getElementById('nextBtn').style.display = 'inline-block';
+    document.getElementById('skipBtn').style.display = 'none';
+    spinning = false;
+    document.getElementById('spinBtn').disabled = false;
+}
+
+function nextStep() {
+    // Special handling after step 3 (Character Talent)
+    if (currentStep === 3) {
+        const talent = characterData.talent;
+        
+        if (talent === 'Magic Master') {
+            // Go to Magic Talent wheel (step 4)
+            currentStep = 4;
+        } else if (talent === 'Weapon Master') {
+            // Go to Weapon Talent wheel (step 5)
+            currentStep = 5;
+        } else {
+            // Skip to final summary
+            showFinalSummary();
+            return;
+        }
+    } 
+    // After Magic Talent (step 4), go to final summary
+    else if (currentStep === 4) {
+        showFinalSummary();
+        return;
+    }
+    // After Weapon Talent (step 5), go to final summary
+    else if (currentStep === 5) {
+        showFinalSummary();
+        return;
+    }
+    // Normal progression for steps 1-2
+    else {
+        currentStep++;
+    }
+
+    // Update for next step
+    const stepTitles = [
+        'Choose Personality Trait',
+        'Choose Character Flaw',
+        'Choose Character Talent',
+        'Choose Magic Talent',
+        'Choose Weapon Talent'
+    ];
+    
+    const stepNumbers = currentStep <= 3 ? `Step ${currentStep} of 3` : 'Bonus Step';
+    document.getElementById('stepInfo').textContent = `${stepNumbers}: ${stepTitles[currentStep - 1]}`;
+    document.getElementById('result').textContent = '';
+    document.getElementById('nextBtn').style.display = 'none';
+    
+    // Reset wheel rotation and transition for new wheel
+    const canvas = document.getElementById('wheel');
+    canvas.style.transition = 'none';
+    currentRotation = 0;
+    canvas.style.transform = 'rotate(0deg)';
+    
+    // Force reflow to ensure transition reset takes effect
+    canvas.offsetHeight;
+    
+    // Re-enable transition
+    canvas.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+    
+    drawWheel();
+}
+
+function showFinalSummary() {
+    document.getElementById('characterSummary').style.display = 'block';
+    document.getElementById('stepInfo').textContent = 'Character Complete! (Note: This character will not be saved)';
+    document.getElementById('spinBtn').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'none';
+    document.querySelector('.wheel-container').style.display = 'none';
+    document.getElementById('result').innerHTML = '<button onclick="restartCreator()">Create Another Character</button>';
+}
+
+function restartCreator() {
+    // Reset all data
+    currentStep = 1;
+    spinning = false;
+    currentRotation = 0;
+    characterData = {
+        trait: '',
+        flaw: '',
+        talent: '',
+        magicTalent: '',
+        weaponTalent: ''
+    };
+    
+    // Reset display
+    document.getElementById('characterSummary').style.display = 'none';
+    document.getElementById('traitResult').textContent = '-';
+    document.getElementById('flawResult').textContent = '-';
+    document.getElementById('talentResult').textContent = '-';
+    document.getElementById('magicResult').textContent = 'None';
+    document.getElementById('weaponResult').textContent = 'None';
+    
+    document.getElementById('stepInfo').textContent = 'Step 1 of 3: Choose Personality Trait';
+    document.getElementById('spinBtn').style.display = 'inline-block';
+    document.getElementById('spinBtn').disabled = false;
+    document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('skipBtn').style.display = 'none';
+    document.querySelector('.wheel-container').style.display = 'block';
+    document.getElementById('result').textContent = '';
+    
+    // Reset wheel
+    const canvas = document.getElementById('wheel');
+    canvas.style.transition = 'none';
+    canvas.style.transform = 'rotate(0deg)';
+    canvas.offsetHeight;
+    canvas.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+    
+    drawWheel();
+}
+
+// Initialize
+drawWheel();
+</script>
+</body>
+</html>
