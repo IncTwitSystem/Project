@@ -87,7 +87,7 @@ nav a:hover {
 
 .card:hover {
     background: var(--hover);
-    transform: translateY(-3px);
+    transform: translateY(0px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
@@ -190,33 +190,6 @@ projects.forEach(proj => {
             //     e.preventDefault();
             // }
         });
-    }
-});
-
-// Optional: Add keyboard navigation
-document.addEventListener('keydown', (e) => {
-    const cards = document.querySelectorAll('.card');
-    const currentIndex = Array.from(cards).indexOf(document.activeElement);
-    
-    switch(e.key) {
-        case 'ArrowRight':
-            if (currentIndex < cards.length - 1) {
-                e.preventDefault();
-                cards[currentIndex + 1].focus();
-            }
-            break;
-        case 'ArrowLeft':
-            if (currentIndex > 0) {
-                e.preventDefault();
-                cards[currentIndex - 1].focus();
-            }
-            break;
-        case 'Enter':
-            if (document.activeElement.classList.contains('card')) {
-                // Enter key will naturally follow the link
-                // You could add special handling here if needed
-            }
-            break;
     }
 });
 </script>
