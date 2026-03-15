@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sublapis Co. Database</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+  :root {
+    --green: #33ff33;
+    --dim-green: #1a7a1a;
+    --dark-green: #0a3a0a;
+    --bg: #050905;
+    --amber: #ffaa00;
+    --red: #ff3333;
+    --blue: #33aaff;
+    --cyan: #33ffcc;
+  }
+
+  body {
+    background: #1a1a1a;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'VT323', 'Courier New', monospace;
+    padding: 40px 20px;
+  }
+
+  .monitor {
+    background: #c8c4b4;
+    padding: 28px 28px 50px 28px;
+    border-radius: 8px 8px 4px 4px;
+    box-shadow:
+      inset -4px -4px 8px rgba(0,0,0,0.3),
+      inset 4px 4px 8px rgba(255,255,255,0.15),
+      0 20px 60px rgba(0,0,0,0.8),
+      0 4px 0 #888, 0 8px 0 #666;
+    position: relative;
+    width: 900px;
+    max-width: 100%;
+  }
+
+  .bezel {
+    background: #2a2a22;
+    border: 4px solid #111;
+    border-radius: 4px;
+    padding: 6px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.9), 0 0 0 2px #444;
+  }
+
+  .screen {
+    background: var(--bg);
+    padding: 24px 28px;
+    position: relative;
+    overflow-y: auto;
+    height: 600px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--dim-green) var(--dark-green);
+    animation: flicker 8s infinite;
+  }
+
+  .screen::-webkit-scrollbar { width: 8px; }
+  .screen::-webkit-scrollbar-track { background: var(--dark-green); border-radius: 4px; }
+  .screen::-webkit-scrollbar-thumb {
+    background: var(--dim-green); border-radius: 4px;
+    box-shadow: 0 0 6px var(--green);
+  }
+  .screen::-webkit-scrollbar-thumb:hover { background: var(--green); }
+
+  .screen::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 2px,
+      rgba(0,0,0,0.25) 2px, rgba(0,0,0,0.25) 4px
+    );
+    pointer-events: none; z-index: 10;
+  }
+
+  .screen::after {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 50% 50%, transparent 50%, rgba(0,0,0,0.6) 100%);
+    pointer-events: none; z-index: 11;
+  }
+
+  @keyframes flicker {
+    0%    { opacity: 1; }
+    97%   { opacity: 1; }
+    97.5% { opacity: 0.92; }
+    98%   { opacity: 1; }
+    99%   { opacity: 0.95; }
+    100%  { opacity: 1; }
+  }
+
+  .screen.granted { animation: grantFlash 0.4s ease; }
+
+  @keyframes grantFlash {
+    0%   { background: #0a300a; }
+    50%  { background: #0f500f; }
+    100% { background: var(--bg); }
+  }
+
+  .screen-content { position: relative; z-index: 5; }
+
+  .line {
+    color: var(--green);
+    font-size: 1.25rem;
+    line-height: 1.5;
+    text-shadow: 0 0 6px var(--green), 0 0 12px rgba(51,255,51,0.4);
+    letter-spacing: 1px;
+    white-space: pre;
+  }
+
+  .line.dim {
+    color: var(--dim-green);
+    text-shadow: 0 0 4px var(--dim-green);
+  }
+
+  .line.header {
+    font-size: 1.5rem;
+    text-shadow: 0 0 8px var(--green), 0 0 20px rgba(51,255,51,0.5);
+  }
+
+  .spacer    { height: 8px; }
+  .spacer-lg { height: 16px; }
+  .spacer-xl { height: 24px; }
+
+  .input-row {
+    display: flex; align-items: center; gap: 0;
+    margin-top: 4px; width: 100%;
+  }
+
+  .prompt {
+    color: var(--green); font-size: 1.5rem;
+    text-shadow: 0 0 6px var(--green);
+    flex-shrink: 0; margin-right: 4px;
+  }
+
+  .code-input {
+    background: transparent;
+    border: 2px solid var(--dim-green);
+    outline: none;
+    font-family: 'VT323', 'Courier New', monospace;
+    font-size: 1.5rem;
+    color: var(--green);
+    text-shadow: 0 0 6px var(--green);
+    letter-spacing: 4px;
+    width: 300px; max-width: 100%;
+    padding: 8px 12px;
+    caret-color: var(--green);
+  }
+
+  .code-input:focus  { border-color: var(--green); }
+  .code-input:disabled { opacity: 0.5; border-color: var(--dark-green); }
+
+  .access-granted {
+    display: none;
+    color: var(--green); font-size: 2rem;
+    text-shadow: 0 0 15px var(--green), 0 0 30px rgba(51,255,51,0.6);
+    text-align: center;
+    animation: flashIn 0.1s ease;
+  }
+  .access-granted.show { display: block; }
+
+  @keyframes flashIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+
+  #logView { display: none; }
+  #logView.show { display: block; animation: fadeIn 0.4s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .divider {
+    color: var(--dim-green);
+    font-size: 1.2rem;
+    text-shadow: 0 0 4px var(--dim-green);
+    letter-spacing: 0; white-space: pre; overflow: hidden;
+  }
+
+  .filter-row {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    align-items: center; margin: 8px 0;
+  }
+
+  .filter-btn {
+    background: transparent;
+    border: 1px solid var(--dark-green);
+    color: var(--dim-green);
+    font-family: 'VT323', 'Courier New', monospace;
+    font-size: 1.1rem; padding: 2px 12px;
+    cursor: pointer;
+    text-shadow: 0 0 4px var(--dim-green);
+    letter-spacing: 1px; transition: all 0.15s;
+  }
+  .filter-btn:hover {
+    border-color: var(--green); color: var(--green);
+    text-shadow: 0 0 6px var(--green);
+  }
+  .filter-btn.active {
+    background: var(--dark-green); border-color: var(--green);
+    color: var(--green); text-shadow: 0 0 8px var(--green);
+    box-shadow: 0 0 8px rgba(51,255,51,0.3) inset;
+  }
+
+  .refresh-btn {
+    background: transparent;
+    border: 1px solid var(--dim-green); color: var(--dim-green);
+    font-family: 'VT323', 'Courier New', monospace;
+    font-size: 1.1rem; padding: 2px 12px;
+    cursor: pointer; letter-spacing: 1px;
+    transition: all 0.15s; margin-left: auto;
+  }
+  .refresh-btn:hover {
+    border-color: var(--green); color: var(--green);
+    box-shadow: 0 0 10px rgba(51,255,51,0.3);
+  }
+
+  .log-entry {
+    display: flex; align-items: flex-start;
+    gap: 12px; padding: 3px 0;
+    border-bottom: 1px dotted var(--dark-green);
+    font-size: 1.1rem;
+    animation: slideIn 0.2s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-8px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .log-entry:hover { background: rgba(51,255,51,0.04); }
+
+  .log-level {
+    min-width: 72px; flex-shrink: 0;
+    font-size: 1.1rem; letter-spacing: 1px;
+  }
+  .log-level.ok      { color: var(--green); text-shadow: 0 0 6px var(--green); }
+  .log-level.success { color: var(--cyan);  text-shadow: 0 0 6px var(--cyan);  }
+  .log-level.warning { color: var(--amber); text-shadow: 0 0 6px var(--amber); }
+  .log-level.error   { color: var(--red);   text-shadow: 0 0 6px var(--red);   }
+
+  .log-message {
+    color: var(--green);
+    text-shadow: 0 0 5px rgba(51,255,51,0.4);
+    flex: 1;
+  }
+
+  .log-source {
+    color: var(--dim-green); font-size: 1rem;
+    text-shadow: 0 0 3px var(--dim-green);
+    min-width: 160px; text-align: right; flex-shrink: 0;
+  }
+
+  .brand {
+    text-align: center; padding: 6px 0 2px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.65rem; letter-spacing: 4px;
+    color: #888; text-transform: uppercase;
+  }
+
+  .led-dot {
+    position: absolute; bottom: 14px; right: 40px;
+    width: 8px; height: 8px;
+    background: #44ff44; border-radius: 50%;
+    box-shadow: 0 0 6px #00cc00;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .stand {
+    width: 180px; height: 18px;
+    background: #b0ac9c; margin: 0 auto;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    position: relative; top: -1px;
+  }
+
+  .stand::after {
+    content: ''; display: block;
+    width: 280px; height: 10px;
+    background: #a8a494; border-radius: 0 0 4px 4px;
+    margin: 0 auto;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+    position: relative; top: 18px; left: 50%;
+    transform: translateX(-50%);
+  }
+</style>
+</head>
+<body>
+
+<div>
+  <div class="monitor" id="monitor">
+    <div class="bezel">
+      <div class="screen" id="screen">
+        <div class="screen-content">
+
+          <!-- LOGIN VIEW -->
+          <div id="loginView">
+            <div class="line header">+--------------------------+</div>
+            <div class="line header">|   Sublapis Co. Database  |</div>
+            <div class="line header">+--------------------------+</div>
+
+            <div class="spacer-lg"></div>
+
+            <div class="line">  LOCATE: Amber Hill</div>
+            <div class="line">  DATE: 6 APR 1992</div>
+
+            <div class="spacer-lg"></div>
+
+            <div class="line">  This System is only used by</div>
+            <div class="line">  Sublapis Co. Employees</div>
+
+            <div class="spacer-lg"></div>
+
+            <div class="line">  USERNAME:</div>
+            <div class="spacer"></div>
+            <div class="input-row">
+              <span class="prompt">  > </span>
+              <input type="text" id="userInput" class="code-input"
+                     maxlength="20" autocomplete="off" autofocus spellcheck="false">
+            </div>
+
+            <div class="spacer"></div>
+
+            <div class="line" id="passLabel" style="display:none">  PASSWORD:</div>
+            <div class="spacer"></div>
+            <div class="input-row" id="passRow" style="display:none">
+              <span class="prompt">  > </span>
+              <input type="password" id="passInput" class="code-input"
+                     maxlength="20" autocomplete="off" spellcheck="false">
+            </div>
+
+            <div class="spacer"></div>
+            <div class="line dim" id="errMsg" style="display:none">  ** INVALID CREDENTIALS. ACCESS DENIED **</div>
+
+            <div class="spacer-lg"></div>
+
+            <div class="access-granted" id="grantMsg">
+              ACCESS GRANTED
+              <br>
+              <span id="welcomeSpan" style="font-size:1.2rem">WELCOME, AGENT_</span>
+            </div>
+
+            <div class="spacer-lg"></div>
+            <div class="spacer-lg"></div>
+          </div>
+
+          <!-- LOG TERMINAL VIEW -->
+          <div id="logView">
+            <div class="line header">+--------------------------------------+</div>
+            <div class="line header">|        Sublapis Co. Database         |</div>
+            <div class="line header">+--------------------------------------+</div>
+            <div class="spacer"></div>
+            <div class="line dim">  SUB-OS v3.5.0  |  Sector: Mantral  </div>
+
+            <div class="spacer-xl"></div>
+
+            <div class="line dim">  [ LIVE SYSTEM LOGS ]</div>
+            <div class="divider">  ----------------------------------------</div>
+
+            <div class="filter-row">
+              <span class="line dim">  FILTER:</span>
+              <button class="filter-btn active" data-filter="all">ALL</button>
+              <button class="filter-btn" data-filter="ok">OK</button>
+              <button class="filter-btn" data-filter="warning">WARN</button>
+              <button class="filter-btn" data-filter="error">ERROR</button>
+              <button class="filter-btn" data-filter="success">SUCCESS</button>
+              <button class="refresh-btn" id="refreshBtn">⟳ REFRESH</button>
+            </div>
+
+            <div id="logEntries"></div>
+            <div class="spacer-lg"></div>
+          </div>
+
+        </div>
+      </div>
+      <div class="brand" id="brandLabel">Sublapis Co. 1010 · MODEL S</div>
+    </div>
+    <div class="led-dot"></div>
+  </div>
+  <div class="stand"></div>
+</div>
+
+<script>
+  // ── credential resolution ──────────────────────────────────────────────────
+  const _x = 0x2F;
+  const _d = (a) => a.map(n => String.fromCharCode(n ^ _x)).join('');
+
+  // username: XOR-encoded segments, split across two arrays then joined
+  const _ua = [0x6B, 0x5D, 0x70];
+  const _ub = [0x6C, 0x43, 0x40, 0x59, 0x4A, 0x5D];
+  const _uc = _d([..._ua, ..._ub]);
+
+  // password: stored as two halves
+  const _pa = [0x1E, 0x1E, 0x1A, 0x1E];
+  const _pb = [0x1D, 0x1E, 0x1D, 0x1D, 0x1A];
+  const _pc = _d([..._pa, ..._pb]);
+
+  // ── log data (XOR-encoded, key = 0x2F) ────────────────────────────────────
+  const _r = [
+    [[88,78,93,65,70,65,72],[122,65,68,65,64,88,65,15,98,64,89,74,66,74,65,91,15,93,74,72,70,92,91,74,93,74,75],[124,15,121,74,65,91,15,104,23]],
+    [[92,90,76,76,74,92,92],[124,74,76,90,93,70,91,86,15,75,64,64,93,15,92,90,76,76,74,92,92,73,90,67,67,86,15,64,95,74,65,74,75],[124,15,124,74,76,90,93,70,91,86,15,107,64,64,93,15,104,30,29]],
+    [[88,78,93,65,70,65,72],[106,65,91,70,91,86,15,28,29,22,24,15,98,64,89,74,66,74,65,91,15,93,74,72,70,92,91,74,93,74,75],[124,15,103,78,67,67,88,78,86,15,104,27,28]],
+    [[88,78,93,65,70,65,72],[123,93,78,92,71,15,108,64,66,95,93,74,92,92,64,93,15,88,78,92,15,110,76,91,70,89,78,91,74,75],[124,15,108,64,66,95,93,74,92,92,64,93,15,104,29,30]],
+    [[88,78,93,65,70,65,72],[106,65,91,70,91,86,15,30,27,26,30,15,120,64,68,74,15,90,95],[97,15,99,78,77,64,91,64,93,86,15,105,30,28]],
+    [[92,90,76,76,74,92,92],[124,91,93,78,76,71,15,123,93,78,70,65,15,88,78,92,15,110,76,91,70,89,78,91,74,75],[96,15,123,93,78,70,65,15,124,91,78,70,91,70,64,65,15,104,26,24]],
+    [[92,90,76,76,74,92,92],[108,70,93,76,90,92,15,88,78,92,15,110,76,91,70,89,78,91,74,75],[102,15,108,70,93,76,90,92,15,118,24,30]],
+    [[74,93,93,64,93],[117,70,91,93,90,92,15,121,70,67,67,74,15,73,78,70,67,74,75,15,91,64,15,110,76,91,70,89,78,91,74],[102,15,117,70,91,93,90,92,15,121,70,67,67,74,15,118,30,22,25]],
+    [[64,68],[127,93,64,69,74,76,91,15,12,12,12,12,12,12,12,15,12,12,12,12,15,92,91,70,67,67,15,72,64,70,65,72],[127,93,64,69,74,76,91,15,127,99]],
+    [[88,78,93,65,70,65,72],[12,12,12,12,15,12,12,12,12,15,88,78,92,15,90,92,74,75],[117,70,91,93,90,92,15,121,70,67,67,74]],
+  ];
+  const logData = _r.map(([l, m, s]) => ({
+    level:   _d(l),
+    message: _d(m),
+    source:  _d(s),
+  }));
+
+  const levelLabel = {
+    ok:      'OK     ',
+    success: 'SUCCESS',
+    warning: 'WARNING',
+    error:   'ERROR  ',
+  };
+
+  let currentFilter = 'all';
+
+  function displayLogs(filter) {
+    const container = document.getElementById('logEntries');
+    const list = (!filter || filter === 'all')
+      ? logData
+      : logData.filter(l => l.level === filter);
+    container.innerHTML = list.map((l, i) => `
+      <div class="log-entry" style="animation-delay:${i * 60}ms">
+        <span class="log-level ${l.level}">${levelLabel[l.level] ?? l.level.toUpperCase()}</span>
+        <span class="log-message">${l.message}</span>
+        <span class="log-source">@${l.source}</span>
+      </div>
+    `).join('');
+  }
+
+  function scrollToBottom() {
+    setTimeout(() => screen.scrollTo({ top: screen.scrollHeight, behavior: 'smooth' }), 100);
+  }
+
+  function launchLogTerminal() {
+    setTimeout(() => {
+      loginView.style.display = 'none';
+      logView.classList.add('show');
+      brandLabel.textContent = 'Sublapis Co. 1010 · SLV-2 · LOG TERMINAL';
+      displayLogs();
+      screen.scrollTo({ top: 0 });
+    }, 1600);
+  }
+
+  const userInput   = document.getElementById('userInput');
+  const passInput   = document.getElementById('passInput');
+  const passRow     = document.getElementById('passRow');
+  const passLabel   = document.getElementById('passLabel');
+  const grantMsg    = document.getElementById('grantMsg');
+  const welcomeSpan = document.getElementById('welcomeSpan');
+  const errMsg      = document.getElementById('errMsg');
+  const screen      = document.getElementById('screen');
+  const loginView   = document.getElementById('loginView');
+  const logView     = document.getElementById('logView');
+  const brandLabel  = document.getElementById('brandLabel');
+
+  userInput.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter' || !userInput.value.trim()) return;
+    userInput.disabled = true;
+    passLabel.style.display = 'block';
+    passRow.style.display   = 'flex';
+    scrollToBottom();
+    passInput.focus();
+  });
+
+  passInput.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter') return;
+
+    const uOk = userInput.value === _uc;
+    const pOk = passInput.value === _pc;
+    errMsg.style.display = 'none';
+
+    if (uOk && pOk) {
+      passInput.disabled = true;
+      screen.classList.add('granted');
+      welcomeSpan.textContent = 'WELCOME, ' + userInput.value + '_';
+      grantMsg.classList.add('show');
+      scrollToBottom();
+      launchLogTerminal();
+    } else {
+      errMsg.style.display = 'block';
+      scrollToBottom();
+      setTimeout(() => {
+        errMsg.style.display    = 'none';
+        passLabel.style.display = 'none';
+        passRow.style.display   = 'none';
+        userInput.disabled      = false;
+        userInput.value         = '';
+        passInput.value         = '';
+        userInput.focus();
+        setTimeout(() => screen.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+      }, 1800);
+    }
+  });
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      currentFilter = this.dataset.filter;
+      displayLogs(currentFilter);
+    });
+  });
+
+  document.getElementById('refreshBtn').addEventListener('click', () => displayLogs(currentFilter));
+</script>
+</body>
+</html>
